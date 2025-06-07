@@ -32,10 +32,10 @@ export class AppComponent implements OnInit {
     addIcons(all);
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        const hiddenMenuRoutes = ['/login', '/admin'];
+        const hiddenMenuRoutes = ['/login', '/admin', '/reset-password'];
         this.showMenu = !hiddenMenuRoutes.includes(event.url);
         // 👇 Aquí desactivamos el swipe si estás en login
-        if (event.url.includes('login') || event.url.includes('admin')) {
+        if (event.url.includes('login') || event.url.includes('admin') || event.url.includes('reset-password')) {
           this.menuCtrl.enable(false);  // 🔒 Desactiva swipe
         } else {
           this.menuCtrl.enable(true);   // ✅ Activa swipe en otras vistas
