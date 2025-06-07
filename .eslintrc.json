@@ -42,5 +42,13 @@
       "extends": ["plugin:@angular-eslint/template/recommended"],
       "rules": {}
     }
-  ]
+  ],
+  "env": {
+    "es6": true,
+    "node": true   // si es código de servidor
+  },
+  "parserOptions": {
+    "ecmaVersion": 2018,    // o "latest"
+    "sourceType": "script"  // o "module" si usas import/export
+  },
 }
