@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { supabase } from 'src/app/core/supabase.client';
-import { IonHeader, IonInput, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonButton, IonText } from "@ionic/angular/standalone";
+import { IonHeader, IonInput, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonButton,
+  IonText, MenuController } from "@ionic/angular/standalone";
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -21,11 +22,23 @@ export class ResetPasswordComponent implements OnInit {
   error: string = '';
   accessToken: string | null = null;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(private fb: FormBuilder, private router: Router, private menuCtrl: MenuController) {
     this.form = this.fb.group({
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirm: ['', [Validators.required]],
     });
+  }
+
+  // Se llama justo antes de que Ionic muestre esta página
+  ionViewWillEnter() {
+    // Deshabilita el menú lateral
+    this.menuCtrl.enable(false);
+  }
+
+  // Se llama justo después de que Ionic deje de mostrar esta página
+  ionViewDidLeave() {
+    // Vuelve a habilitar el menú lateral
+    this.menuCtrl.enable(true);
   }
 
   ngOnInit(){
@@ -53,19 +66,25 @@ export class ResetPasswordComponent implements OnInit {
     try {
       const { error } = await supabase.auth.updateUser({ password });
 
-      if (error) {
-        this.error = error.message;
-        this.message = '';
-      } else {
-        this.message = '✅ Contraseña actualizada correctamente. Serás redirigido al login.';
-        this.error = '';
-        setTimeout(() => {
-          this.router.navigate(['/auth']);
-        }, 3000);
-      }
-    } catch (err) {
-      console.error('Error inesperado:', err);
-      this.error = '⚠️ Algo salió mal. Intenta nuevamente.';
+    if (error) {
+      this.error   = error.message;
+      this.message = '';
+      return;
     }
+
+    // 2) Cierra la sesión para forzar login de nuevo
+    await supabase.auth.signOut();
+
+    // 3) Muestra mensaje y redirige
+    this.message = '✅ Contraseña actualizada. Serás redirigido al login.';
+    this.error   = '';
+    setTimeout(() => {
+      this.router.navigate(['/auth']);  // o la ruta de tu login
+    }, 2000);
+
+  } catch (err) {
+    console.error('Error inesperado:', err);
+    this.error = '⚠️ Algo salió mal. Intenta nuevamente.';
+  }
   }
 }

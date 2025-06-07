@@ -31,6 +31,7 @@ export const routes: Routes = [
 
   {
     path: 'configuration',
+    canActivate: [AuthGuard],
     component: ConfigurationComponent
   },
   {
@@ -39,6 +40,7 @@ export const routes: Routes = [
   },
   {
     path: 'changed-pass',
+    canActivate: [AuthGuard],
     loadComponent: () => import('./auth/reset-password/changed-password/changed-password.component').then(reset => reset.ChangedPasswordComponent),
   },
   {
