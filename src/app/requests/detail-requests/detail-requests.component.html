@@ -30,9 +30,9 @@
   <ion-card *ngIf="request" class="detail-card">
     <ion-card-header>
       <ion-card-title>{{ request.typeName }}</ion-card-title>
-      <ion-card-subtitle>
-        <strong>De:</strong> {{ request.group_origin.name }} |
-        <strong>Para:</strong> {{ request.group_destine.name }}
+      <ion-card-subtitle *ngIf="request">
+        <strong>De:</strong> {{ request.group_origin?.name }} |
+        <strong>Para:</strong> {{ request.group_destine?.name }}
       </ion-card-subtitle>
     </ion-card-header>
 
@@ -65,7 +65,15 @@
           </ion-select-option>
         </ion-select>
       </ion-item>
-
+      <ion-item>
+        <ion-label>Adjuntar documento</ion-label>
+        <ion-toggle
+          slot="end"
+          [(ngModel)]="attachEnabled"
+          name="attachEnabled"
+        ></ion-toggle>
+      </ion-item>
+      <ng-container *ngIf="attachEnabled">
       <ion-item lines="full">
         <ion-label position="stacked">Seleccionar documento</ion-label>
         <!-- Input nativo oculto -->
@@ -92,7 +100,7 @@
           </p>
         </ion-card-content>
       </ion-card>
-
+    </ng-container>
       <ion-button expand="block" color="success" (click)="updateStateDoc()" [disabled]="!isStateChanged">
         Solicitud Completada (Estado)
       </ion-button>

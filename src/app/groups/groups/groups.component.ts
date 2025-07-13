@@ -208,7 +208,9 @@ export class GroupsComponent implements OnInit {
   editGroup(group: GroupsI) {
     this.isEditing = true;
     this.editingGroupId = group.id!;
+    // this.newGroup = { name: group.name, parentId: group.parentId ?? null };
     this.newGroup = { ...group };
+    this.selectedGroup = group.parentId ?? null;
     this.modalEdit.present();
   }
 
@@ -221,21 +223,26 @@ export class GroupsComponent implements OnInit {
     }
 
     await this.interactionService.showLoading('Actualizando...');
+    this.newGroup.parentId = this.selectedGroup;
+
     this.groupService
       .updateGroup(this.editingGroupId, this.newGroup)
       .subscribe({
-        next: () => {
-          this.isEditing = false;
-          this.editingGroupId = null;
+        next: updatedGroup  => {
+          // Reemplazamos en memoria el grupo que cambiamos
+          const idx = this.groups.findIndex(g => g.id === updatedGroup.id);
+          if (idx > -1) this.groups[idx] = updatedGroup;
           //this.newGroup = { name: '', parentId: this.selectedGroup };
-          this.loadGroup();
           this.interactionService.dismissLoading();
           this.modalEdit.dismiss(null, 'confirm');
           this.interactionService.showToast('Grupo actualizado');
+          this.isEditing = false;
+          this.editingGroupId = null;
+          this.loadGroup();
         },
         error: (err) => {
-          this.interactionService.dismissLoading();
           console.error('Error al actualizar grupo:', err);
+          this.interactionService.dismissLoading();
           this.interactionService.showToast('Error al actualizar grupo.');
         },
       });

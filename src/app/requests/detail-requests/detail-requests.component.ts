@@ -30,7 +30,7 @@ import { ModalController } from '@ionic/angular';
 import { filter, firstValueFrom, throwError } from 'rxjs';
 import { getIdFromMaybeObject } from 'src/app/helper/utils';
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
-import { PopoverController } from '@ionic/angular/standalone';
+import { PopoverController, IonToggle } from '@ionic/angular/standalone';
 import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.component';
 
 @Component({
@@ -39,7 +39,7 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
   styleUrls: ['./detail-requests.component.scss'],
   providers: [ModalController],
   standalone: true,
-  imports: [IonText, IonIcon, IonAvatar, IonPopover, IonList,
+  imports: [ IonIcon, IonAvatar, IonPopover, IonList,
     IonBackButton,
     IonCardSubtitle,
     IonLabel,
@@ -58,6 +58,7 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
     IonSelectOption,
     FormsModule,
     CommonModule,
+    IonToggle
   ],
 })
 export class DetailRequestsComponent implements OnInit {
@@ -65,7 +66,7 @@ export class DetailRequestsComponent implements OnInit {
   states: StateI[] = [];
   selectedStateId: string | null = null;
   isLoading = true;
-  //requestUserData = { userName: '', userPhone: '' };
+  attachEnabled = false;
   requestUserData: { userName: string | null; userPhone: string | null } = {
       userName: null,
       userPhone: null,
@@ -96,8 +97,6 @@ export class DetailRequestsComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
     this.selectedDoc = input.files[0];
-
-    // Generar URL para vista previa/link de descarga
     this.docPreviewUrl = URL.createObjectURL(this.selectedDoc);
   }
 
@@ -152,7 +151,8 @@ export class DetailRequestsComponent implements OnInit {
   }
 
   onStateChange(newValue: string) {
-    this.isStateChanged = newValue !== this.originalStateId;
+    this.originalStateId = newValue; // Actualiza el original al nuevo valor
+    this.isStateChanged = true;
   }
   async loadRequestData(requestId: string) {
     try {
@@ -199,11 +199,21 @@ export class DetailRequestsComponent implements OnInit {
         this.request.id!,
         this.selectedStateId
       );
-      this.request.state_id = this.selectedStateId;
-      console.log('Que hay aqui: ', this.requestUserData.userName, this.requestUserData.userPhone);
+
+      if (this.attachEnabled) {
+        if (!this.selectedDoc) {
+          throw new Error('Debes seleccionar un documento primero.');
+        }
+        await this.requestsService.attachDocument(
+          this.requestId,
+          this.selectedDoc
+        );
+      }
+      //this.request.state_id = this.selectedStateId;
+
       this.goToWhatsApp(this.requestUserData.userName, this.requestUserData.userPhone);
 
-      this.loadDocument();
+      //this.loadDocument();
       this.interactionService.showToast('✅ Estado actualizado correctamente');
       this.router.navigate(['/view-excuse']);
     } catch (error) {

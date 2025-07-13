@@ -37,7 +37,7 @@
       <ion-label>
         <h2>{{ user.name }}</h2>
         <p>{{ user.email }}</p>
-        <p>Grupo: {{  user.group_id.name }}</p>
+        <p>Grupo: {{  user.group_id?.name || 'Sin grupo' }}</p>
       </ion-label>
       <ion-buttons slot="end">
         <ion-button color="success" (click)="editUser(user)">
@@ -177,7 +177,7 @@
 
           <ion-item>
             <ion-label>Grupo</ion-label>
-            <ion-select name="editGroupId" [(ngModel)]="newUser.group_id" interface="popover" [compareWith]="compareGroups">
+            <ion-select name="editGroupId" [(ngModel)]="selectedGroupId" interface="popover" [compareWith]="compareGroups">
               <ion-select-option *ngFor="let group of groups" [value]="group.id">
                 {{ group.name }}
               </ion-select-option>

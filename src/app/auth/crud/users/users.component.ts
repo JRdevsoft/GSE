@@ -73,14 +73,8 @@ import { Router } from '@angular/router';
 export class UsersComponent implements OnInit {
   users: Models.User.UsersI[] = [];
   groups: GroupsI[] = [];
-  newUser: Models.User.UsersI = this.getDefaultUsers();
-  newUsers: {
-    name: '',
-    email: '',
-    group_id: '',
-    photo: '',
-    phone: '',
-  };
+  newUser!: Models.User.UsersI;
+  selectedGroupId: string | null = null;
   photo: File | null = null;
   isEditing = false;
   editingUserId: string | null = null;
@@ -96,8 +90,8 @@ export class UsersComponent implements OnInit {
     if (file) this.selectedPhoto = file;
   }
 
-  @ViewChild('modalCreate') modal!: IonModal;
-  @ViewChild('modalUpdate') modalEdit!: IonModal;
+  @ViewChild('modalCreate') modalCreate!: IonModal;
+  @ViewChild('modalUpdate') modalUpdate!: IonModal;
 
   constructor(
     private userService: UserService,
@@ -138,19 +132,19 @@ export class UsersComponent implements OnInit {
     );
   }
   openModalEdit() {
-    this.modalEdit.present(); // Muestra el primer modal
+    this.modalUpdate.present(); // Muestra el primer modal
   }
 
   openModalCreate() {
     this.resetForm();
-    this.modal.present(); // Muestra el primer modal
+    this.modalCreate.present(); // Muestra el primer modal
   }
 
   cancelModalCreate() {
-    this.modal.dismiss(null, 'cancel');
+    this.modalCreate.dismiss(null, 'cancel');
   }
   cancelModalUpdate() {
-    this.modalEdit.dismiss(null, 'cancel');
+    this.modalUpdate.dismiss(null, 'cancel');
   }
 
   loadUsers() {
@@ -248,7 +242,7 @@ export class UsersComponent implements OnInit {
       );
       this.interactionService.dismissLoading();
       this.loadUsers();
-      this.modal.dismiss(); // 🔒 Cierra el modal
+      this.modalCreate.dismiss(); // 🔒 Cierra el modal
       this.resetForm(); // 🔄 Limpia el formulario
       this.interactionService.showToast('Usuario registrado con éxito ✅');
       console.log('Registro exitoso');
@@ -257,52 +251,107 @@ export class UsersComponent implements OnInit {
       this.interactionService.showToast('Error al registrar usuario ❌');
     }
   }
+
   editUser(user: Models.User.UsersI) {
     this.isEditing = true;
-    this.newUser = { ...user };
     this.editingUserId = user.id!;
-
-    const groupId = user.group_id as any;
-    if (typeof groupId === 'string') {
-      const group = this.groups.find(g => g.id === groupId);
-      if (group) {
-        this.newUser.group_id = group;
-      } else {
-        console.warn('⚠️ No se encontró el grupo con id:', groupId);
-      }
-    } else {
-      this.newUser.group_id = user.group_id;
-    }
-    this.modalEdit.present(); // Muestra el modal
+    this.newUser = { ...user };
+    this.selectedGroupId = user.group_id?.id ?? null;
+    this.modalUpdate.present();
   }
 
   async updateUser() {
     if (!this.editingUserId) return;
 
-    const userToUpdate: Partial<any> = {
-      name: this.newUser.name,
+    // Validaciones básicas
+    if (!this.newUser.name?.trim()) {
+      return this.interactionService.showToast('El nombre es obligatorio');
+    }
+    if (!this.newUser.email) {
+      return this.interactionService.showToast('El correo es obligatorio');
+    }
+
+    // Armo el payload, incluyendo group_id sólo si no es null
+    const payload: any = {
+      name:  this.newUser.name.trim(),
       email: this.newUser.email,
       phone: this.newUser.phone,
-      photo: this.newUser.photo,
-      group_id: typeof this.newUser.group_id === 'string'
-            ? this.newUser.group_id
-            : this.newUser.group_id.id
+      group_id: this.selectedGroupId,
+      photo: this.newUser.photo
     };
-    console.log('🆔 ID del usuario que se va a editar:', this.editingUserId);
-    console.log('Esto es userToUpadate: ', userToUpdate);
 
-    this.userService.updateUser(this.editingUserId, userToUpdate).subscribe({
-      next: () => {
-        this.loadUsers();
-        this.modalEdit.dismiss();
-        this.interactionService.showToast('✅ Usuario actualizado');
-      },
-      error: (err) => {
-        console.error(err);
-        this.interactionService.showToast('❌ Error al actualizar usuario');
-      }
-    });
+    await this.interactionService.showLoading('Actualizando usuario...');
+    this.userService.updateUser(this.editingUserId, payload)
+      .subscribe({
+        next: updated => {
+          // Reemplazo el usuario en el array
+          const idx = this.users.findIndex(u => u.id === updated.id);
+          if (idx > -1) this.users[idx] = updated;
+          this.interactionService.dismissLoading();
+          this.modalUpdate.dismiss();
+          this.interactionService.showToast('✅ Usuario actualizado');
+          this.isEditing = false;
+          this.editingUserId = null;
+        },
+        error: err => {
+          console.error('Error al actualizar usuario:', err);
+          this.interactionService.dismissLoading();
+          this.interactionService.showToast('❌ Error al actualizar usuario');
+        }
+      });
   }
+  // editUser(user: Models.User.UsersI) {
+  //   this.isEditing = true;
+  //   this.editingUserId = user.id!;
+  //   const groupId = user.group_id as any;
+  //     if (typeof groupId === 'string') {
+  //       const group = this.groups.find(g => g.id === groupId);
+  //       if (group) {
+  //         this.newUser.group_id = group;
+  //       } else {
+  //         console.warn('⚠️ No se encontró el grupo con id:', groupId);
+  //       }
+  //     } else {
+  //       this.newUser.group_id = user.group_id;
+  //     }
+  //   this.newUser = {
+  //     name:  user.name,
+  //     email: user.email,
+  //     phone: user.phone,
+  //     photo: user.photo,
+  //     group_id: groupId
+  //   };
+
+  //   this.modalUpdate.present(); // Muestra el modal
+  // }
+
+  // async updateUser() {
+  //   if (!this.editingUserId) return;
+
+  //   const userToUpdate: Partial<any> = {
+  //     name: this.newUser.name,
+  //     email: this.newUser.email,
+  //     phone: this.newUser.phone,
+  //     photo: this.newUser.photo,
+  //     group_id: typeof this.newUser.group_id === 'string'
+  //           ? this.newUser.group_id
+  //           : this.newUser.group_id.id
+  //   };
+  //   console.log('🆔 ID del usuario que se va a editar:', this.editingUserId);
+  //   console.log('Esto es userToUpadate: ', userToUpdate);
+
+  //   this.userService.updateUser(this.editingUserId, userToUpdate).subscribe({
+  //     next: () => {
+  //     this.modalUpdate.dismiss();
+  //     this.interactionService.showToast('✅ Usuario actualizado');
+  //     this.loadUsers();
+  //     },
+  //     error: (err) => {
+  //       console.error(err);
+  //       this.interactionService.showToast('❌ Error al actualizar usuario');
+  //     }
+  //   });
+  // }
 
   async deleteUser(id: string) {
     const confirm = await this.interactionService.presentAlert(
@@ -316,6 +365,8 @@ export class UsersComponent implements OnInit {
       await this.interactionService.showLoading('Eliminando...');
       this.userService.deleteUser(id).subscribe({
         next: () => {
+          this.users = this.users.filter(u => u.id !== id);
+          this.filteredUsers = [...this.users];
           this.loadUsers();
           this.interactionService.showToast('Usuario eliminado');
         },

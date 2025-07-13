@@ -113,7 +113,10 @@ export class RequestsService {
       .eq('id', id)
       .select('user_id')
       .then(({ error }) => {
-        if (error) throw error;
+        if (error){
+          console.error('❌ Error al actualizar estado de solicitud:', error.message);
+          throw error;
+        }
       });
   }
 

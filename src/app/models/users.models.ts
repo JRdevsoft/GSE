@@ -9,6 +9,6 @@ export namespace ModelsUsers {
     phone?: string,
     password?: string,
     group_id: GroupsI,
-    photo?: string
+    photo?: string,
   }
 }
