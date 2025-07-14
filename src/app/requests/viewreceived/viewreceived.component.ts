@@ -21,7 +21,7 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
   templateUrl: './viewreceived.component.html',
   styleUrls: ['./viewreceived.component.scss'],
   standalone: true,
-  imports: [IonText, IonIcon, IonAvatar, IonPopover, IonList, IonItem,  IonCardSubtitle,  IonTitle, IonContent, IonCardContent, IonCardTitle, IonCardHeader, IonCard,
+  imports: [ IonIcon, IonAvatar, IonPopover, IonList, IonItem,  IonCardSubtitle,  IonTitle, IonContent, IonCardContent, IonCardTitle, IonCardHeader, IonCard,
     IonButtons, IonToolbar, IonHeader, FormsModule, CommonModule, IonMenuButton]
 })
 export class ViewreceivedComponent  implements OnInit {
