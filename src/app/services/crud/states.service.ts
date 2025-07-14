@@ -45,4 +45,18 @@ export class StatesService {
 
     return data?.id ?? null;
   }
+
+//   async getDefaultStateId(): Promise<string | null> {
+//   const { data, error } = await supabase
+//     .from('states')
+//     .select('id')
+//     .eq('is_default', true)
+//     .maybeSingle();
+
+//   if (error) {
+//     console.error('❌ Error al buscar estado por defecto:', error.message);
+//     return null;
+//   }
+//   return data?.id ?? null;
+// }
 }

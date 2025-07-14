@@ -248,7 +248,7 @@ async loadUserAppData(): Promise<void> {
 
   const { data, error: userError } = await supabase
     .from('usersapp')
-    .select('*, group_id(*)') // 👈 trae los datos del grupo completo
+    .select('*, group_id:group_id(*)') // 👈 trae los datos del grupo completo
     .eq('id', userId)
     .maybeSingle();
 

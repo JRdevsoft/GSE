@@ -233,7 +233,6 @@ export class RequestsComponent  implements OnInit {
           this.formData[key] = publicUrl;
         }
       }
-
       const initialStateId = await this.stateService.getInitialState();
       console.log('Initial state', initialStateId);
 
