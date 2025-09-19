@@ -102,6 +102,9 @@
             <ion-checkbox justify="start" labelPlacement="end" [(ngModel)]="newGroup.permition_access_requests" name="access">Permitir Acceso de Login</ion-checkbox>
           </ion-item>
           <ion-item>
+            <ion-checkbox justify="start" labelPlacement="end" [(ngModel)]="newGroup.permition_history_requests" name="access">Historial de Solicitudes</ion-checkbox>
+          </ion-item>
+          <ion-item>
             <ion-checkbox justify="start" labelPlacement="end" [(ngModel)]="newGroup.permition_config" name="config">Configuraciones</ion-checkbox>
           </ion-item>
           <ion-button expand="full" type="submit" shape="round" [disabled]="!formCreate.form.valid">
@@ -180,6 +183,9 @@
         <ion-item>
           <ion-checkbox justify="start" labelPlacement="end" [(ngModel)]="newGroup.permition_access_requests" [ngModelOptions]="{standalone: true}">Permitir Acceso de Login</ion-checkbox>
         </ion-item>
+        <ion-item>
+            <ion-checkbox justify="start" labelPlacement="end" [(ngModel)]="newGroup.permition_history_requests" name="access">Historial de Solicitudes</ion-checkbox>
+          </ion-item>
         <ion-item>
           <ion-checkbox justify="start" labelPlacement="end" [(ngModel)]="newGroup.permition_config" [ngModelOptions]="{standalone: true}">Configuraciones</ion-checkbox>
         </ion-item>
