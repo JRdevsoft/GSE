@@ -12,6 +12,7 @@ export interface GroupsI{
   permition_access_requests?: boolean;
   permition_init_excuse?: boolean;
   permition_init_request?: boolean;
+  permition_history_requests?: boolean;
   permition_config?: boolean;
 }
 

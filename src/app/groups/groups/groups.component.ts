@@ -79,6 +79,7 @@ export class GroupsComponent implements OnInit {
     permition_requests: false,
     permition_viewsolic: false,
     permition_access_requests: false,
+    permition_history_requests: false,
     permition_init_excuse: false,
     permition_init_request: false,
     permition_config: false

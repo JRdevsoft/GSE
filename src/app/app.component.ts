@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
       { title: 'Crear Solicitud', url: '/requestsfire', icon: 'send', permission: 'permition_requests' },
       { title: 'Solicitudes Recibidas', url: '/view-excuse', icon: 'eye', permission: 'permition_viewsolic' },
       { title: 'Solicitudes de Accesso', url: '/show-access', icon: 'key', permission: 'permition_access_requests' },
-      { title: 'Historial Solicitudes', url: '/history', icon: 'key', permission: 'permition_access_requests' },
+      { title: 'Historial Solicitudes', url: '/history', icon: 'key', permission: 'permition_history_requests' },
       { title: 'Configuracion', url: '/config', icon: 'settings', permission: 'permition_config' },
     ];
     return fullMenu.filter(

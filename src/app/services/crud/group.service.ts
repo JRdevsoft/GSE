@@ -102,37 +102,6 @@ getGroupsReq(): Observable<GroupsI[]> {
       })
     );
   }
-  // { name: group.name, parentid: group.parentId || null }
-  // Eliminar grupo
-
-  // deleteGroup(groupId: string): Observable<void> {
-  //   // Paso 1: desasignar grupo en usersapp → retorna Promise<{ error, data }>
-  //   const unassign$ = from(
-  //     supabase
-  //       .from('usersapp')
-  //       .update({ group_id: null })
-  //       .eq('group_id', groupId)
-  //   );
-
-  //   // Paso 2: borrar el grupo → retorna Promise<{ error, data }>
-  //   const delete$ = () => from(
-  //     supabase
-  //       .from('groups')
-  //       .delete()
-  //       .eq('id', groupId)
-  //   );
-
-  //   return unassign$.pipe(
-  //     concatMap(({ error: errUnassign }) => {
-  //       if (errUnassign) throw errUnassign;
-  //       return delete$();
-  //     }),
-  //     map(({ error: errDelete }) => {
-  //       if (errDelete) throw errDelete;
-  //       // al usar map y no emitir nada, resultamos en Observable<void>
-  //     })
-  //   );
-  // }
   deleteGroup(id: string): Observable<any> {
      return from(
       supabase
@@ -184,14 +153,4 @@ getGroupsReq(): Observable<GroupsI[]> {
       mapTo(void 0)
     );
   }
-  //   return from(
-  //     supabase
-  //       .from('groups')
-  //       .delete()
-  //       .eq('id', id)
-  //       .then(({ error }) => {
-  //         if (error) throw error;
-  //       })
-  //   );
-  // }
 }
