@@ -20,3 +20,7 @@ export interface GroupI{
   name: string;
   parentId: number | null;
 }
+
+export interface GroupWithParentName extends GroupsI {
+  parentName?: string | null;
+}

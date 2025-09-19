@@ -67,10 +67,28 @@ async loadUserAppData(): Promise<void> {
   // Método para registrar un usuario
   async signUp(name: string, email: string, phone: string, password: string,  group_id: GroupsI | string, photo: File) {
     try {
+
+      const { data: existsRow, error: existsErr } = await supabase
+        .from('usersapp')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle();
+
+      if (existsErr) throw existsErr;
+      if (existsRow) {
+        const e: any = new Error('El correo ya está registrado');
+        e.status = 409;
+        throw e;
+    }
       // Crear usuario en Supabase Auth
       const { data, error } = await supabase.auth.signUp({ email, password });
 
-      if (error) throw error;
+      if (error){
+          if (/already registered/i.test(error.message)) {
+          (error as any).status = 409;
+        }
+        throw error;
+      }
 
       if (!photo) {
         return console.error("Error: No se seleccionó ninguna imagen.");;
@@ -102,14 +120,18 @@ async loadUserAppData(): Promise<void> {
 
       if (dbError) {
         console.error("Error al insertar en usersapp:", dbError.message);
+        try { await supabase.auth.admin.deleteUser(data.user?.id as string); } catch {}
         throw dbError;
       }
+      
       return data;
     } catch (error) {
       console.error("Error en registro:", error);
       throw error;
     }
   }
+
+
 
   // Método para iniciar sesión
   async signIn(email: string, password: string) {

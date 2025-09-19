@@ -64,7 +64,7 @@
       <ion-item class="field-item">
         <ion-label>Grupo al que Perteneces</ion-label>
         <ion-select formControlName="group">
-          <ion-select-option *ngFor="let g of groups" [value]="g.name">
+          <ion-select-option *ngFor="let g of groups" [value]="g.id">
             {{ g.name }}
           </ion-select-option>
         </ion-select>

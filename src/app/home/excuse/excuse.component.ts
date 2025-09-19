@@ -1,17 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { IonHeader, IonTitle, IonToolbar, IonButtons, IonContent, IonMenuButton, PopoverController, IonAvatar, IonPopover, IonList, IonItem, IonImg, IonIcon } from '@ionic/angular/standalone';
+import { Router, RouterLink } from '@angular/router';
+import { IonHeader, IonTitle, IonToolbar, IonButtons, IonContent, IonMenuButton, PopoverController, IonAvatar, IonPopover, IonList, IonItem, IonImg, IonIcon, IonLabel } from '@ionic/angular/standalone';
 import { ConfigScreenExcuseService } from 'src/app/services/supabase/config/config-screen-excuse.service';
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
 
 @Component({
-  selector: 'app-excuse',
-  templateUrl: './excuse.component.html',
-  styleUrls: ['./excuse.component.scss'],
-  standalone: true,
-  imports: [IonIcon, IonImg, IonItem, IonList, IonPopover, IonAvatar,  IonContent, IonButtons, IonToolbar, IonTitle,
-    IonHeader, IonMenuButton, CommonModule ]
+    selector: 'app-excuse',
+    templateUrl: './excuse.component.html',
+    styleUrls: ['./excuse.component.scss'],
+    imports: [IonLabel, IonIcon, IonImg, IonItem, IonList, IonPopover, IonAvatar, IonContent, IonButtons, IonToolbar, IonTitle,
+        IonHeader, IonMenuButton, CommonModule, RouterLink]
 })
 export class ExcuseComponent  implements OnInit {
 

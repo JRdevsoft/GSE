@@ -19,7 +19,22 @@
           <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form">
       <ion-item>
         <ion-label position="floating">Email</ion-label>
-        <ion-input type="email" formControlName="email" required></ion-input>
+        <ion-input
+        type="email"
+        formControlName="email"
+        inputmode="email"
+        autocapitalize="off"
+        autocomplete="email"
+        (ionBlur)="normalizeEmail()"
+        required></ion-input>
+        <div *ngIf="loginForm.get('email').touched && loginForm.get('email').invalid"
+             class="error-text">
+          El correo es obligatorio
+        </div>
+        <ion-text color="danger" class="error-text"
+          *ngIf="emailCtrl.touched && emailCtrl.hasError('pattern')">
+          Formato inválido. Ej: usuario&#64;dominio.com
+        </ion-text>
       </ion-item>
 
       <ion-item>

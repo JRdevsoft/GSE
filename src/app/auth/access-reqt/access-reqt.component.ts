@@ -10,12 +10,11 @@ import { GroupsI } from 'src/app/models/groups.models';
 import { GroupService } from 'src/app/services/crud/group.service';
 
 @Component({
-  selector: 'app-access-reqt',
-  templateUrl: './access-reqt.component.html',
-  styleUrls: ['./access-reqt.component.scss'],
-  standalone: true,
-  imports: [ IonTextarea, IonBackButton, IonButtons, IonButton, IonInput, IonItem, IonLabel, IonContent, IonTitle, IonToolbar, IonHeader,
-    ReactiveFormsModule, CommonModule, IonSelect, IonSelectOption, FormsModule  ]
+    selector: 'app-access-reqt',
+    templateUrl: './access-reqt.component.html',
+    styleUrls: ['./access-reqt.component.scss'],
+    imports: [IonTextarea, IonBackButton, IonButtons, IonButton, IonInput, IonItem, IonLabel, IonContent, IonTitle, IonToolbar, IonHeader,
+        ReactiveFormsModule, CommonModule, IonSelect, IonSelectOption, FormsModule]
 })
 export class AccessReqtComponent implements OnInit {
 
@@ -50,8 +49,9 @@ export class AccessReqtComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadGroups();
+    console.log(this.loadGroups());
 
+    this.loadGroups();
     // Escucho cambios en el selector de grupo
     this.accessForm.get('group')!.valueChanges.subscribe(g => {
       // Primero, limpio validadores de TODOS los campos extra
@@ -65,6 +65,8 @@ export class AccessReqtComponent implements OnInit {
         c.reset('');
       });
 
+      // this.loadGroups();
+      // console.log(this.loadGroups());
       // Luego, según el grupo, activo los controles necesarios
       if (g === 'Docente') {
         ['subjectSchool','courseTeacher','sectionTeacher','modalidad']
@@ -109,9 +111,15 @@ export class AccessReqtComponent implements OnInit {
   }
 }
 
-  loadGroups(){
-    this.groupService.getGroups().subscribe(group => {
-      this.groups = group;
+   loadGroups() {
+    this.groupService.getGroups().subscribe({
+      next: (group) => {
+        this.groups = group;
+      },
+      error: (err) => {
+        console.error('Error al cargar grupos:', err);
+        this.interactionService.showToast('Error al cargar grupos');
+      },
     });
   }
   goLogin(){

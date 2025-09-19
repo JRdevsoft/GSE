@@ -11,13 +11,12 @@ import { GroupsI } from './models/groups.models';
 import { Session } from '@supabase/supabase-js';
 import { InteractionService } from './services/interaction.service';
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss'],
-  standalone: true,
-  imports: [ IonButton, IonIcon, IonLabel, IonItem, IonList, IonContent, IonListHeader, IonButtons, IonNote, IonToolbar,
-    IonHeader, IonSplitPane, IonApp, IonRouterOutlet, IonMenu, IonMenuButton, IonMenuToggle, RouterLink,
-  CommonModule],
+    selector: 'app-root',
+    templateUrl: 'app.component.html',
+    styleUrls: ['app.component.scss'],
+    imports: [IonButton, IonIcon, IonLabel, IonItem, IonList, IonContent, IonListHeader, IonButtons, IonNote, IonToolbar,
+        IonHeader, IonSplitPane, IonApp, IonRouterOutlet, IonMenu, IonMenuButton, IonMenuToggle, RouterLink,
+        CommonModule]
 })
 export class AppComponent implements OnInit {
 
@@ -68,6 +67,7 @@ export class AppComponent implements OnInit {
       { title: 'Crear Solicitud', url: '/requestsfire', icon: 'send', permission: 'permition_requests' },
       { title: 'Solicitudes Recibidas', url: '/view-excuse', icon: 'eye', permission: 'permition_viewsolic' },
       { title: 'Solicitudes de Accesso', url: '/show-access', icon: 'key', permission: 'permition_access_requests' },
+      { title: 'Historial Solicitudes', url: '/history', icon: 'key', permission: 'permition_access_requests' },
       { title: 'Configuracion', url: '/config', icon: 'settings', permission: 'permition_config' },
     ];
     return fullMenu.filter(

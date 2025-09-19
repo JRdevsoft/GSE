@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -31,12 +31,11 @@ import { PopoverController } from '@ionic/angular/standalone';
 import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.component';
 
 @Component({
-  selector: 'app-typerequests',
-  templateUrl: './typerequests.component.html',
-  styleUrls: ['./typerequests.component.scss'],
-  standalone: true,
-  imports: [ IonIcon, IonAvatar, IonPopover,
-     IonButton,
+    selector: 'app-typerequests',
+    templateUrl: './typerequests.component.html',
+    styleUrls: ['./typerequests.component.scss'],
+    imports: [IonIcon, IonAvatar, IonPopover,
+        IonButton,
         IonInput,
         IonItem,
         IonLabel,
@@ -56,8 +55,8 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
         IonSelectOption,
         IonMenuButton,
         CommonModule,
-
-  ]
+        RouterLink
+    ]
 })
 export class TyperequestsComponent  implements OnInit {
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Models } from 'src/app/models/models';
 import { InteractionService } from 'src/app/services/interaction.service';
 import { AccessReqtService } from 'src/app/services/supabase/access-requests/access-reqt.service';
@@ -11,13 +11,12 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-details-access',
-  templateUrl: './details-access.component.html',
-  styleUrls: ['./details-access.component.scss'],
-  standalone: true,
-  imports: [IonButton, IonLabel, IonCardContent, IonCardTitle, IonCardHeader, IonCard,
-    IonContent, IonItem, IonList, IonPopover, IonAvatar, IonTitle, IonBackButton, IonButtons,
-    IonToolbar, IonHeader, CommonModule, IonIcon ]
+    selector: 'app-details-access',
+    templateUrl: './details-access.component.html',
+    styleUrls: ['./details-access.component.scss'],
+    imports: [IonButton, IonLabel, IonCardContent, IonCardTitle, IonCardHeader, IonCard,
+        IonContent, IonItem, IonList, IonPopover, IonAvatar, IonTitle, IonBackButton, IonButtons,
+        IonToolbar, IonHeader, CommonModule, IonIcon, RouterLink]
 })
 export class DetailsAccessComponent  implements OnInit {
 

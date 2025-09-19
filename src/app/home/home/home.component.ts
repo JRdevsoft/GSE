@@ -1,17 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonButtons, IonContent, IonMenuButton, PopoverController, IonAvatar, IonPopover, IonList, IonItem, IonImg, IonLabel, IonIcon } from '@ionic/angular/standalone';
 import { ConfigScreenRequestsService } from 'src/app/services/supabase/config/config-screen-requests.service';
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  standalone: true,
-  imports: [IonIcon,  IonImg, IonItem, IonList, IonPopover, IonAvatar, IonContent, IonButtons, IonTitle, IonToolbar,
-    IonHeader, IonMenuButton, CommonModule ]
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    imports: [IonIcon, IonImg, IonItem, IonList, IonPopover, IonAvatar, IonContent, IonButtons, IonTitle, IonToolbar,
+        IonHeader, IonMenuButton, CommonModule, RouterLink, IonLabel]
 })
 export class HomeComponent  implements OnInit {
 

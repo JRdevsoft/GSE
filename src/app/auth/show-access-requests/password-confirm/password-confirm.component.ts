@@ -5,11 +5,10 @@ import { IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonItem, IonLab
  } from "@ionic/angular/standalone";
 
 @Component({
-  selector: 'app-password-confirm',
-  templateUrl: './password-confirm.component.html',
-  styleUrls: ['./password-confirm.component.scss'],
-  standalone: true,
-  imports: [IonInput, IonContent, IonLabel, IonItem, IonButton, IonButtons, IonTitle, IonToolbar, IonHeader, FormsModule ]
+    selector: 'app-password-confirm',
+    templateUrl: './password-confirm.component.html',
+    styleUrls: ['./password-confirm.component.scss'],
+    imports: [IonInput, IonContent, IonLabel, IonItem, IonButton, IonButtons, IonTitle, IonToolbar, IonHeader, FormsModule]
 })
 export class PasswordConfirmComponent implements AfterViewInit {
   @ViewChild('passwordInput', { static: false }) passwordInput!: IonInput;

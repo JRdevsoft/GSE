@@ -22,8 +22,7 @@ import {
   IonSelect,
   IonSelectOption,
   IonPopover,
-  PopoverController,
-} from '@ionic/angular/standalone';
+  PopoverController, IonBadge } from '@ionic/angular/standalone';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
@@ -32,51 +31,63 @@ import {
   trash,
   add,
   createOutline,
-  trashOutline, logOutOutline, keyOutline } from 'ionicons/icons';
+  trashOutline, logOutOutline, keyOutline, informationCircleOutline } from 'ionicons/icons';
 import { InteractionService } from 'src/app/services/interaction.service';
 import { GroupsI } from 'src/app/models/groups.models';
 import { GroupService } from 'src/app/services/crud/group.service';
 import { UserService } from 'src/app/services/crud/user.service';
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 @Component({
-  selector: 'app-users',
-  templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss'],
-  standalone: true,
-  imports: [
-    IonPopover,
-    IonText,
-    IonInput,
-    IonModal,
-    IonButton,
-    IonIcon,
-    IonItem,
-    IonList,
-    IonLabel,
-    IonContent,
-    IonButtons,
-    IonTitle,
-    IonToolbar,
-    IonHeader,
-    IonMenuButton,
-    FormsModule,
-    CommonModule,
-    IonFab,
-    IonFabButton,
-    ReactiveFormsModule,
-    IonSelectOption,
-    IonAvatar,
-    IonSelect,
-  ],
+    selector: 'app-users',
+    templateUrl: './users.component.html',
+    styleUrls: ['./users.component.scss'],
+    imports: [
+        IonPopover,
+        IonText,
+        IonInput,
+        IonModal,
+        IonButton,
+        IonIcon,
+        IonItem,
+        IonList,
+        IonLabel,
+        IonContent,
+        IonButtons,
+        IonTitle,
+        IonToolbar,
+        IonHeader,
+        IonMenuButton,
+        FormsModule,
+        CommonModule,
+        IonFab,
+        IonFabButton,
+        ReactiveFormsModule,
+        IonSelectOption,
+        IonAvatar,
+        IonSelect,
+        RouterLink
+    ]
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent  {
   users: Models.User.UsersI[] = [];
   groups: GroupsI[] = [];
   newUser!: Models.User.UsersI;
   selectedGroupId: string | null = null;
   photo: File | null = null;
   isEditing = false;
+  listValidate = {
+    hasMin: false,
+    hasUpper: false,
+    hasNumber: false,
+    hasSpecial: false
+  }
+  passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?':{}|<>]).{8,}$/;
+  formUser: any = {
+    name: '',
+    email: '',
+    phone: ''
+  };
   editingUserId: string | null = null;
   //BUSQUEDA // Lista original de usuarios
   filteredUsers: Models.User.UsersI[] = []; // Lista filtrada de usuarios
@@ -101,15 +112,66 @@ export class UsersComponent implements OnInit {
     private router: Router,
     private popoverCtrl: PopoverController
   ) {
-    addIcons({logOutOutline,keyOutline,create,trash,add,createOutline,trashOutline});
+    addIcons({logOutOutline,keyOutline,informationCircleOutline,create,trash,add,createOutline,trashOutline});
   }
 
-  async ngOnInit() {
+ async ionViewWillEnter() {
     this.loadGroups();
     this.loadUsers();
     this.userPhoto = await this.supabaseService.loadPhoto();
   }
 
+  // Formatea con guiones automáticamente
+formatPhone(event: any) {
+  let input = event.target.value || '';
+
+  // Elimina todo lo que no sea dígito
+  input = input.replace(/\D/g, '');
+
+  // Máximo 10 dígitos
+  if (input.length > 10) {
+    input = input.substring(0, 10);
+  }
+
+  // Aplica formato XXX-XXX-XXXX
+  if (input.length > 6) {
+    input = input.replace(/(\d{3})(\d{3})(\d{0,4})/, '$1-$2-$3');
+  } else if (input.length > 3) {
+    input = input.replace(/(\d{3})(\d{0,3})/, '$1-$2');
+  }
+
+  this.newUser.phone = input;
+}
+onPasswordInput(ev: any) {
+  const v: string = ev?.target?.value || '';
+
+  this.listValidate.hasMin = v.length >= 8;
+  this.listValidate.hasUpper = /[A-Z]/.test(v);
+  this.listValidate.hasNumber = /\d/.test(v);
+  this.listValidate.hasSpecial = /[!@#$%^&*(),.?':{}|<>]/.test(v);
+}
+//solo letras
+allowOnlyLetters(event: KeyboardEvent) {
+  const inputChar = String.fromCharCode(event.keyCode || event.which);
+  // Solo letras, espacios, ñ, Ñ y vocales acentuadas
+  const pattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/;
+  if (!pattern.test(inputChar)) {
+    event.preventDefault();
+  }
+}
+//solo numeros
+allowOnlyNumbers(event: KeyboardEvent) {
+  const charCode = event.which ? event.which : event.keyCode;
+  // Solo números (0–9) y teclas especiales (backspace=8, tab=9, enter=13)
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    event.preventDefault();
+  }
+}
+
+// Valida el formato (ej: 809-555-1234)
+  isValidPhone(phone: string): boolean {
+    return /^\d{3}-\d{3}-\d{4}$/.test(phone);
+  }
   logout() {
     this.supabaseService.signOut();
     this.router.navigate(['/auth']);
@@ -225,13 +287,15 @@ export class UsersComponent implements OnInit {
     const group = this.groups.find((g) => g.id === id);
     return group ? group.name : 'Sin grupo';
   }
-  async addUser() {
+
+    async addUser() {
     if (!this.photo) {
       this.interactionService.showToast('Debes seleccionar una foto 📸');
       return;
     }
+
+    this.interactionService.showLoading();
     try {
-      this.interactionService.showLoading();
       await this.supabaseService.signUp(
         this.newUser.name,
         this.newUser.email,
@@ -240,18 +304,29 @@ export class UsersComponent implements OnInit {
         this.newUser.group_id,
         this.photo
       );
-      this.interactionService.dismissLoading();
+
       this.loadUsers();
-      this.modalCreate.dismiss(); // 🔒 Cierra el modal
-      this.resetForm(); // 🔄 Limpia el formulario
+      this.modalCreate.dismiss();
+      this.resetForm();
       this.interactionService.showToast('Usuario registrado con éxito ✅');
-      console.log('Registro exitoso');
-    } catch (error) {
-      console.error(error);
-      this.interactionService.showToast('Error al registrar usuario ❌');
+    } catch (e: any) {
+      console.error('Error en registro:', e);
+
+      // Mensajes específicos por código
+      if (e?.status === 409 || e?.code === '23505' || /already registered/i.test(e?.message)) {
+        //this.interactionService.showToast('El correo ya está registrado ❌');
+        this.interactionService.showExistsAlert('No se pudo registrar', 'El correo ya está registrado.');
+      } else if (e?.code === '23503') {
+        // Violación de FK: o id no existe en auth.users o group_id inválido
+        this.interactionService.showToast('Datos inválidos: verifique grupo y credenciales (FK) ❌');
+      } else {
+        this.interactionService.showToast('Error al registrar usuario ❌');
+      }
+    } finally {
+      // 🔒 Nunca se queda colgado el loading
+      this.interactionService.dismissLoading();
     }
   }
-
   editUser(user: Models.User.UsersI) {
     this.isEditing = true;
     this.editingUserId = user.id!;
@@ -286,7 +361,14 @@ export class UsersComponent implements OnInit {
         next: updated => {
           // Reemplazo el usuario en el array
           const idx = this.users.findIndex(u => u.id === updated.id);
-          if (idx > -1) this.users[idx] = updated;
+          if (idx > -1){
+            this.users = [
+              ...this.users.slice(0, idx),
+              updated,                              // 👈 ya viene con group_id {id,name}
+              ...this.users.slice(idx + 1),
+            ];
+          } //this.users[idx] = updated;
+
           this.interactionService.dismissLoading();
           this.modalUpdate.dismiss();
           this.interactionService.showToast('✅ Usuario actualizado');

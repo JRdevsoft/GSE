@@ -52,6 +52,17 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     loadComponent: () => import('./groups/groups/groups.component').then(m => m.GroupsComponent),
   },
+   {
+    path: 'info',
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./info-app/info-app.component').then(info => info.InfoAppComponent),
+  },
+ {
+    path: 'history',
+    canActivate: [AuthGuard],
+    loadComponent: () => import('./requests/requests-history/requests-history.component').then(history => history.RequestsHistoryComponent),
+  },
+
   {
     path: 'state',
     canActivate: [AuthGuard],

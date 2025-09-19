@@ -8,13 +8,12 @@ import { CommonModule } from '@angular/common';
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
 
 @Component({
-  selector: 'app-changed-password',
-  templateUrl: './changed-password.component.html',
-  styleUrls: ['./changed-password.component.scss'],
-  standalone: true,
-  imports:[ IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonInput, IonButton, IonItem, IonText,
-    FormsModule, ReactiveFormsModule, IonButtons, IonBackButton, CommonModule,
-   ]
+    selector: 'app-changed-password',
+    templateUrl: './changed-password.component.html',
+    styleUrls: ['./changed-password.component.scss'],
+    imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonInput, IonButton, IonItem, IonText,
+        FormsModule, ReactiveFormsModule, IonButtons, IonBackButton, CommonModule,
+    ]
 })
 export class ChangedPasswordComponent  implements OnInit {
 

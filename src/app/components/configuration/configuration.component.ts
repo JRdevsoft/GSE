@@ -6,16 +6,16 @@ import { CommonModule } from '@angular/common';
 import { ConfigScreenRequestsService } from 'src/app/services/supabase/config/config-screen-requests.service';
 import { ConfigScreenExcuseService } from 'src/app/services/supabase/config/config-screen-excuse.service';
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ConfigLogoService } from 'src/app/services/supabase/config/config-logo.service';
 
 @Component({
-  selector: 'app-configuration',
-  templateUrl: './configuration.component.html',
-  styleUrls: ['./configuration.component.scss'],
-  standalone: true,
-  imports: [IonIcon, IonList, IonPopover, IonAvatar, IonToggle, IonInput, IonLabel, IonItem, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonButton,
-    IonContent, IonButtons, IonTitle, IonToolbar, IonHeader, IonMenuButton, FormsModule, CommonModule ]
+    selector: 'app-configuration',
+    templateUrl: './configuration.component.html',
+    styleUrls: ['./configuration.component.scss'],
+    imports: [IonIcon, IonList, IonPopover, IonAvatar, IonToggle, IonInput, IonLabel, IonItem, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonButton,
+        IonContent, IonButtons, IonTitle, IonToolbar, IonHeader, IonMenuButton, FormsModule, CommonModule,
+        RouterLink]
 })
 export class ConfigurationComponent  implements OnInit {
 

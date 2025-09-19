@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { InteractionService } from 'src/app/services/interaction.service';
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
 import {  IonHeader, IonToolbar, IonTitle, IonButtons, IonAvatar, IonPopover, IonList,
@@ -10,12 +10,11 @@ import { CommonModule } from '@angular/common';
 import { PasswordConfirmComponent } from './password-confirm/password-confirm.component';
 
 @Component({
-  selector: 'app-show-access-requests',
-  templateUrl: './show-access-requests.component.html',
-  styleUrls: ['./show-access-requests.component.scss'],
-  standalone: true,
-  imports: [ IonIcon, IonLabel, IonContent, IonItem, IonList, IonPopover, IonAvatar, IonButtons, IonTitle, IonToolbar,
-    IonHeader, IonMenuButton, CommonModule ]
+    selector: 'app-show-access-requests',
+    templateUrl: './show-access-requests.component.html',
+    styleUrls: ['./show-access-requests.component.scss'],
+    imports: [IonIcon, IonLabel, IonContent, IonItem, IonList, IonPopover, IonAvatar, IonButtons, IonTitle, IonToolbar,
+        IonHeader, IonMenuButton, CommonModule, RouterLink]
 })
 export class ShowAccessRequestsComponent  implements OnInit {
 
