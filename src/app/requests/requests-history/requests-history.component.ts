@@ -1,18 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { HistoryService } from 'src/app/services/requests/history.service';
 import { Models } from 'src/app/models/models';
-import { IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonContent, IonSegment, IonSegmentButton, IonItem, IonInput, IonLabel, IonSearchbar, IonRefresher, IonRefresherContent, IonList, IonAvatar, IonSpinner } from "@ionic/angular/standalone";
+import { IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonContent, IonSegment,
+  IonSegmentButton, IonItem, IonInput, IonLabel, IonSearchbar, IonRefresher, IonRefresherContent,
+  IonList, IonAvatar, IonSpinner, ToastController, IonBackButton } from "@ionic/angular/standalone";
 
 // Exportadores
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+// import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-requests-history',
   templateUrl: './requests-history.component.html',
   styleUrls: ['./requests-history.component.scss'],
   standalone: true,
-  imports: [IonSpinner, IonAvatar, IonList, IonRefresherContent, IonRefresher, IonSearchbar, IonLabel, IonInput, IonItem, IonSegmentButton, IonSegment, IonContent, IonIcon, IonButton, IonButtons, IonTitle, IonToolbar, IonHeader, ]
+  imports: [IonBackButton, IonSpinner, IonAvatar, IonList, IonRefresherContent, IonRefresher, IonSearchbar,
+    IonLabel, IonInput, IonItem, IonSegmentButton, IonSegment, IonContent, IonIcon, IonButton,
+    IonButtons, IonTitle, IonToolbar, IonHeader, CommonModule, FormsModule ]
 })
 export class RequestsHistoryComponent  implements OnInit {
 
@@ -29,7 +36,7 @@ export class RequestsHistoryComponent  implements OnInit {
 
   constructor(
     private historySrv: HistoryService,
-    // private toastCtrl: ToastController
+    private toastCtrl: ToastController
   ) {}
 
   ngOnInit() {
@@ -114,51 +121,74 @@ export class RequestsHistoryComponent  implements OnInit {
     XLSX.utils.book_append_sheet(wb, ws, 'Historial');
     XLSX.writeFile(wb, `historial_solicitudes_${new Date().toISOString().slice(0,10)}.xlsx`);
   }
-
-  exportPDF() {
-    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'A4' });
-
-    // Título
-    doc.setFontSize(16);
-    doc.text('Historial de Solicitudes', 40, 40);
-
-    // Tabla
-    // Encabezado verde (46,125,50)
-    (doc as any).autoTable({
-      startY: 60,
-      styles: { fontSize: 9, cellPadding: 6, overflow: 'linebreak' },
-      headStyles: { fillColor: [46, 125, 50], textColor: 255, halign: 'center' },
-      columnStyles: {
-        0: { cellWidth: 110 },
-        1: { cellWidth: 150 },
-        2: { cellWidth: 120 },
-        3: { cellWidth: 160 },
-        4: { cellWidth: 420 } // detalle
-      },
-      head: [['Fecha', 'Nombre', 'Teléfono', 'Tipo', 'Detalle (formData)']],
-      body: this.filtered.map((r) => [
-        new Date(r.created_at).toLocaleString(),
-        r.usersapp?.name ?? '',
-        r.usersapp?.phone ?? '',
-        r.typeName ?? '',
-        this.compactFormData(r.formData),
-      ]),
-      didDrawPage: (data: any) => {
-        // Footer
-        const pageSize = doc.internal.pageSize;
-        const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-        doc.setFontSize(9);
-        doc.text(
-          `Generado: ${new Date().toLocaleString()}`,
-          40,
-          pageHeight - 20
-        );
-      },
-    });
-
-    doc.save(`historial_solicitudes_${new Date().toISOString().slice(0,10)}.pdf`);
+  private wrapBreaks(s: string): string {
+  // inserta saltos suaves para que URLs/llaves largas puedan partir
+    return (s ?? '').replace(/([/:?&=._-])/g, '$1\u200B');
   }
+exportPDF() {
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'A4' });
 
+  const pageWidth = (doc as any).internal.pageSize.getWidth();
+  const centerX = pageWidth / 2;
+
+  // Cabecera
+  const imgW = 220, imgH = 120, topY = 40;
+  doc.addImage('assets/logo.png', 'PNG', centerX - imgW/2, topY, imgW, imgH);
+  doc.setFontSize(20);
+  const titleY = topY + imgH + 22;
+  doc.text('Historial de Solicitudes', centerX, titleY + 6, { align: 'center' });
+
+  // Márgenes / anchos
+  const left = 40, right = 40, bottom = 40;
+  const usable = pageWidth - left - right;
+  const startY = titleY + 22;
+
+  // Porcentajes de columnas (suman 1.0)
+  const w = {
+    fecha: usable * 0.16,
+    nombre: usable * 0.22,
+    tel: usable * 0.14,
+    tipo: usable * 0.18,
+    detalle: usable * 0.30, // ancho real de "Detalle"
+  };
+
+  // Cuerpo con "Detalle" pre-partido al ancho real de su columna
+  const body = this.filtered.map(r => {
+    const detallePlano = this.wrapBreaks(this.compactFormData(r.formData));
+    // restamos un pequeño padding interior (~12pt)
+    const detalleEnvuelto = doc.splitTextToSize(detallePlano, w.detalle - 12);
+    const detalleMultiline = Array.isArray(detalleEnvuelto) ? detalleEnvuelto.join('\n') : String(detalleEnvuelto);
+    return [
+      new Date(r.created_at).toLocaleString(),
+      r.usersapp?.name ?? '',
+      r.usersapp?.phone ?? '',
+      r.typeName ?? '',
+      detalleMultiline, // <-- array de líneas, ya no se sale
+    ];
+  });
+
+  autoTable(doc, {
+    startY,
+    margin: { left, right, bottom },
+    tableWidth: usable,
+    styles: { fontSize: 9, cellPadding: 6, overflow: 'linebreak' },
+    bodyStyles: { valign: 'top' },
+    headStyles: { fillColor: [46,125,50], textColor: 255, halign: 'center' },
+    columnStyles: {
+      0: { cellWidth: w.fecha },
+      1: { cellWidth: w.nombre },
+      2: { cellWidth: w.tel },
+      3: { cellWidth: w.tipo },
+      4: { cellWidth: w.detalle },
+    },
+    head: [['Fecha', 'Nombre', 'Teléfono', 'Tipo', 'Detalle (formData)']],
+    body,
+    pageBreak: 'auto',
+    rowPageBreak: 'auto',   // permite partir filas largas entre páginas
+  });
+
+  doc.save(`historial_solicitudes_${new Date().toISOString().slice(0,10)}.pdf`);
+}
   private async toast(message: string, color: 'success' | 'warning' | 'danger' = 'success') {
     const t = await this.toastCtrl.create({ message, duration: 2500, color });
     t.present();

@@ -5,7 +5,7 @@ export namespace ModelsHistory {
     created_at: string;
     typeName: string | null;
     formData: any;
-    usersapp: { id: string; name: string | null; phone: string | null; email: string | null } | null;
+    usersapp: { id: string; name: string | null; phone: string | null; email: string | null; photo: string | null } | null;
   }
 
   export interface HistoryFilters {

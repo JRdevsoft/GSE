@@ -9,13 +9,12 @@ import { ConfigLogoService } from 'src/app/services/supabase/config/config-logo.
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
-  standalone: true,
-  imports: [IonText, IonCol, IonRow, IonGrid, IonImg, IonIcon, IonButton, IonLabel, IonItem, IonContent, IonTitle, IonToolbar, IonInput, IonHeader, FormsModule,
-    IonToggle, FormsModule, ReactiveFormsModule, CommonModule
-  ]
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+    imports: [IonText, IonCol, IonRow, IonGrid, IonImg, IonIcon, IonButton, IonLabel, IonItem, IonContent, IonTitle, IonToolbar, IonInput, IonHeader, FormsModule,
+        IonToggle, FormsModule, ReactiveFormsModule, CommonModule
+    ]
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;

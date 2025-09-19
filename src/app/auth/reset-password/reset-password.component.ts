@@ -7,13 +7,12 @@ import { IonHeader, IonInput, IonToolbar, IonTitle, IonContent, IonItem, IonLabe
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-reset-password',
-  templateUrl: './reset-password.component.html',
-  styleUrls: ['./reset-password.component.scss'],
-  standalone: true,
-  imports: [IonText, IonButton, IonLabel, IonItem, IonContent, IonTitle, IonToolbar, IonInput, IonHeader,
-    ReactiveFormsModule, CommonModule
-   ]
+    selector: 'app-reset-password',
+    templateUrl: './reset-password.component.html',
+    styleUrls: ['./reset-password.component.scss'],
+    imports: [IonText, IonButton, IonLabel, IonItem, IonContent, IonTitle, IonToolbar, IonInput, IonHeader,
+        ReactiveFormsModule, CommonModule
+    ]
 })
 export class ResetPasswordComponent implements OnInit {
 

@@ -17,12 +17,11 @@ import { PopoverController } from '@ionic/angular/standalone';
 import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.component';
 
 @Component({
-  selector: 'app-viewreceived',
-  templateUrl: './viewreceived.component.html',
-  styleUrls: ['./viewreceived.component.scss'],
-  standalone: true,
-  imports: [IonLabel,  IonIcon, IonAvatar, IonPopover, IonList, IonItem,  IonCardSubtitle,  IonTitle, IonContent, IonCardContent, IonCardTitle, IonCardHeader, IonCard,
-    IonButtons, IonToolbar, IonHeader, FormsModule, CommonModule, IonMenuButton, RouterLink ]
+    selector: 'app-viewreceived',
+    templateUrl: './viewreceived.component.html',
+    styleUrls: ['./viewreceived.component.scss'],
+    imports: [IonLabel, IonIcon, IonAvatar, IonPopover, IonList, IonItem, IonCardSubtitle, IonTitle, IonContent, IonCardContent, IonCardTitle, IonCardHeader, IonCard,
+        IonButtons, IonToolbar, IonHeader, FormsModule, CommonModule, IonMenuButton, RouterLink]
 })
 export class ViewreceivedComponent  implements OnInit {
 

@@ -1,8 +1,10 @@
 <!-- src/app/pages/requests-history/requests-history.component.html -->
 <ion-header class="shadow-sm">
-  <ion-toolbar color="light">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
     <ion-title>Historial de solicitudes</ion-title>
-
     <ion-buttons slot="end">
       <ion-button (click)="exportExcel()" fill="solid" class="btn-excel">
         <ion-icon name="download-outline" slot="start"></ion-icon>
@@ -78,7 +80,7 @@
   <ion-list *ngIf="!loading">
     <ion-item class="item-card" *ngFor="let r of filtered">
       <ion-avatar slot="start" class="avatar">
-        <img src="assets/avatar-user.png" alt="user"/>
+        <img [src]="r.usersapp?.photo || 'assets/avatar-user.png'"/>
       </ion-avatar>
 
       <ion-label>

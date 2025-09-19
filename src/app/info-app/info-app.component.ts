@@ -4,13 +4,12 @@ import { IonContent, IonBadge, IonCard, IonCardHeader, IonCardTitle, IonCardSubt
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-info-app',
-  templateUrl: './info-app.component.html',
-  styleUrls: ['./info-app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [IonBackButton, IonButtons, IonToolbar, IonHeader, IonTitle, IonNote, IonIcon, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader,
-    IonCard, IonBadge, IonContent, CommonModule ]
+    selector: 'app-info-app',
+    templateUrl: './info-app.component.html',
+    styleUrls: ['./info-app.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonBackButton, IonButtons, IonToolbar, IonHeader, IonTitle, IonNote, IonIcon, IonCardContent, IonCardSubtitle, IonCardTitle, IonCardHeader,
+        IonCard, IonBadge, IonContent, CommonModule]
 })
 export class InfoAppComponent {
 

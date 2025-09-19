@@ -10,12 +10,11 @@ import { GroupsI } from 'src/app/models/groups.models';
 import { GroupService } from 'src/app/services/crud/group.service';
 
 @Component({
-  selector: 'app-access-reqt',
-  templateUrl: './access-reqt.component.html',
-  styleUrls: ['./access-reqt.component.scss'],
-  standalone: true,
-  imports: [ IonTextarea, IonBackButton, IonButtons, IonButton, IonInput, IonItem, IonLabel, IonContent, IonTitle, IonToolbar, IonHeader,
-    ReactiveFormsModule, CommonModule, IonSelect, IonSelectOption, FormsModule  ]
+    selector: 'app-access-reqt',
+    templateUrl: './access-reqt.component.html',
+    styleUrls: ['./access-reqt.component.scss'],
+    imports: [IonTextarea, IonBackButton, IonButtons, IonButton, IonInput, IonItem, IonLabel, IonContent, IonTitle, IonToolbar, IonHeader,
+        ReactiveFormsModule, CommonModule, IonSelect, IonSelectOption, FormsModule]
 })
 export class AccessReqtComponent implements OnInit {
 

@@ -10,12 +10,11 @@ import { CommonModule } from '@angular/common';
 import { PasswordConfirmComponent } from './password-confirm/password-confirm.component';
 
 @Component({
-  selector: 'app-show-access-requests',
-  templateUrl: './show-access-requests.component.html',
-  styleUrls: ['./show-access-requests.component.scss'],
-  standalone: true,
-  imports: [ IonIcon, IonLabel, IonContent, IonItem, IonList, IonPopover, IonAvatar, IonButtons, IonTitle, IonToolbar,
-    IonHeader, IonMenuButton, CommonModule, RouterLink ]
+    selector: 'app-show-access-requests',
+    templateUrl: './show-access-requests.component.html',
+    styleUrls: ['./show-access-requests.component.scss'],
+    imports: [IonIcon, IonLabel, IonContent, IonItem, IonList, IonPopover, IonAvatar, IonButtons, IonTitle, IonToolbar,
+        IonHeader, IonMenuButton, CommonModule, RouterLink]
 })
 export class ShowAccessRequestsComponent  implements OnInit {
 

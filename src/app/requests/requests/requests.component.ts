@@ -20,14 +20,13 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
 import { StateI } from 'src/app/models/state.models';
 
 @Component({
-  selector: 'app-requests',
-  templateUrl: './requests.component.html',
-  styleUrls: ['./requests.component.scss'],
-  standalone: true,
-  imports: [IonGrid, IonCol, IonRow, IonText, IonPopover, IonAvatar, IonCheckbox, IonButton, IonIcon, IonRadio, IonRadioGroup, IonInput, IonList, IonLabel, IonItem,
-    IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonContent, IonButtons, IonTitle, IonHeader,
-    IonToolbar, IonMenuButton, IonSelect, IonSelectOption, ReactiveFormsModule, FormsModule, CommonModule,
-    RouterLink ]
+    selector: 'app-requests',
+    templateUrl: './requests.component.html',
+    styleUrls: ['./requests.component.scss'],
+    imports: [IonGrid, IonCol, IonRow, IonText, IonPopover, IonAvatar, IonCheckbox, IonButton, IonIcon, IonRadio, IonRadioGroup, IonInput, IonList, IonLabel, IonItem,
+        IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonContent, IonButtons, IonTitle, IonHeader,
+        IonToolbar, IonMenuButton, IonSelect, IonSelectOption, ReactiveFormsModule, FormsModule, CommonModule,
+        RouterLink]
 })
 export class RequestsComponent  implements OnInit {
 

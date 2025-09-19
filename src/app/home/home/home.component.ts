@@ -6,12 +6,11 @@ import { ConfigScreenRequestsService } from 'src/app/services/supabase/config/co
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  standalone: true,
-  imports: [IonIcon,  IonImg, IonItem, IonList, IonPopover, IonAvatar, IonContent, IonButtons, IonTitle, IonToolbar,
-    IonHeader, IonMenuButton, CommonModule, RouterLink, IonLabel ]
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    imports: [IonIcon, IonImg, IonItem, IonList, IonPopover, IonAvatar, IonContent, IonButtons, IonTitle, IonToolbar,
+        IonHeader, IonMenuButton, CommonModule, RouterLink, IonLabel]
 })
 export class HomeComponent  implements OnInit {
 

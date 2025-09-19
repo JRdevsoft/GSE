@@ -6,13 +6,12 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonInpu
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-forgot-password',
-  templateUrl: './forgot-password.component.html',
-  styleUrls: ['./forgot-password.component.scss'],
-  standalone: true,
-  imports: [IonBackButton, IonButtons, IonText, IonButton, IonInput, IonLabel, IonItem, IonContent, IonTitle, IonToolbar, IonHeader,
-    ReactiveFormsModule, CommonModule
-  ]
+    selector: 'app-forgot-password',
+    templateUrl: './forgot-password.component.html',
+    styleUrls: ['./forgot-password.component.scss'],
+    imports: [IonBackButton, IonButtons, IonText, IonButton, IonInput, IonLabel, IonItem, IonContent, IonTitle, IonToolbar, IonHeader,
+        ReactiveFormsModule, CommonModule
+    ]
 })
 export class ForgotPasswordComponent {
 

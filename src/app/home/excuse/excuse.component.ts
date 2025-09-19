@@ -6,12 +6,11 @@ import { ConfigScreenExcuseService } from 'src/app/services/supabase/config/conf
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
 
 @Component({
-  selector: 'app-excuse',
-  templateUrl: './excuse.component.html',
-  styleUrls: ['./excuse.component.scss'],
-  standalone: true,
-  imports: [IonLabel, IonIcon, IonImg, IonItem, IonList, IonPopover, IonAvatar,  IonContent, IonButtons, IonToolbar, IonTitle,
-    IonHeader, IonMenuButton, CommonModule, RouterLink ]
+    selector: 'app-excuse',
+    templateUrl: './excuse.component.html',
+    styleUrls: ['./excuse.component.scss'],
+    imports: [IonLabel, IonIcon, IonImg, IonItem, IonList, IonPopover, IonAvatar, IonContent, IonButtons, IonToolbar, IonTitle,
+        IonHeader, IonMenuButton, CommonModule, RouterLink]
 })
 export class ExcuseComponent  implements OnInit {
 

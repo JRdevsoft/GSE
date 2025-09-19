@@ -31,12 +31,11 @@ import { PopoverController } from '@ionic/angular/standalone';
 import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.component';
 
 @Component({
-  selector: 'app-typerequests',
-  templateUrl: './typerequests.component.html',
-  styleUrls: ['./typerequests.component.scss'],
-  standalone: true,
-  imports: [ IonIcon, IonAvatar, IonPopover,
-     IonButton,
+    selector: 'app-typerequests',
+    templateUrl: './typerequests.component.html',
+    styleUrls: ['./typerequests.component.scss'],
+    imports: [IonIcon, IonAvatar, IonPopover,
+        IonButton,
         IonInput,
         IonItem,
         IonLabel,
@@ -57,8 +56,7 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
         IonMenuButton,
         CommonModule,
         RouterLink
-
-  ]
+    ]
 })
 export class TyperequestsComponent  implements OnInit {
 

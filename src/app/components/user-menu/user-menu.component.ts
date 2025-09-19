@@ -4,11 +4,10 @@ import { supabase } from 'src/app/core/supabase.client';
 import { IonList, IonItem, PopoverController } from "@ionic/angular/standalone";
 
 @Component({
-  selector: 'app-user-menu',
-  templateUrl: './user-menu.component.html',
-  styleUrls: ['./user-menu.component.scss'],
-  standalone: true,
-  imports: [IonItem, IonList, ]
+    selector: 'app-user-menu',
+    templateUrl: './user-menu.component.html',
+    styleUrls: ['./user-menu.component.scss'],
+    imports: [IonItem, IonList,]
 })
 export class UserMenuComponent {
 

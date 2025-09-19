@@ -14,13 +14,12 @@ import { SupabaseService } from 'src/app/services/supabase/supabase.service';
 import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.component';
 
 @Component({
-  selector: 'app-state',
-  templateUrl: './state.component.html',
-  styleUrls: ['./state.component.scss'],
-  standalone: true,
-  imports: [ IonAvatar, IonPopover, IonFabButton, IonFab, IonIcon, IonList, IonSearchbar, IonInput, IonItem, IonButton, IonModal,
-    IonLabel, IonContent, IonButtons, IonTitle, IonToolbar, IonHeader, IonMenuButton, FormsModule, CommonModule,
-  ReactiveFormsModule, RouterLink ]
+    selector: 'app-state',
+    templateUrl: './state.component.html',
+    styleUrls: ['./state.component.scss'],
+    imports: [IonAvatar, IonPopover, IonFabButton, IonFab, IonIcon, IonList, IonSearchbar, IonInput, IonItem, IonButton, IonModal,
+        IonLabel, IonContent, IonButtons, IonTitle, IonToolbar, IonHeader, IonMenuButton, FormsModule, CommonModule,
+        ReactiveFormsModule, RouterLink]
 })
 export class StateComponent  implements OnInit {
 

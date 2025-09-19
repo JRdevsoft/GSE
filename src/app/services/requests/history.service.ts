@@ -22,7 +22,7 @@ export class HistoryService {
         typeName,
         formData,
         usersapp:usersapp!inner (
-          id, name, phone, email
+          id, name, phone, email, photo
         )
       `
       )
@@ -49,4 +49,20 @@ export class HistoryService {
     if (error) throw error;
     return (data ?? []) as unknown as Models.History.RequestHistoryItem[];
   }
+
+  avatarUrl(r: Models.History.RequestHistoryItem): string {
+  const p = r.usersapp?.photo?.trim();
+  if (!p) return 'assets/avatar-user.png';
+
+  // Si ya es una URL completa, úsala tal cual
+  if (/^https?:\/\//i.test(p)) return p;
+
+  // Espera "bucket/path/archivo.ext"
+  const parts = p.split('/');
+  const bucket = parts.shift()!;            // ej. "avatars"
+  const path   = parts.join('/');           // ej. "uid/foto.png"
+
+  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+  return data?.publicUrl || 'assets/avatar-user.png';
+}
 }
