@@ -13,13 +13,17 @@
     <ion-popover trigger="user-avatar" dismiss-on-select="true">
     <ng-template>
       <ion-list>
-        <ion-item button (click)="logout()">
-          <ion-icon name="log-out-outline" slot="start"></ion-icon>
-          Cerrar sesión
-        </ion-item>
+      <ion-item routerLink="/info">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        <ion-label>Info app</ion-label>
+      </ion-item>
         <ion-item button (click)="changePassword()">
           <ion-icon name="key-outline" slot="start"></ion-icon>
           Cambiar contraseña
+        </ion-item>
+      <ion-item button (click)="logout()">
+          <ion-icon name="log-out-outline" slot="start"></ion-icon>
+          Cerrar sesión
         </ion-item>
       </ion-list>
     </ng-template>

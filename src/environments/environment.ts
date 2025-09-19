@@ -12,6 +12,19 @@ export const environment = {
     templateIdAdmin: 'template_li9fghg',
     publicKey: 'WIeiRn9GhuL72YaNi'
   },
+   appInfo: {
+    name: 'GSE Application',
+    description:
+      `La aplicación está diseñada para gestionar de manera rápida,
+      segura y organizada las solicitudes de documentos institucionales
+      y el envío de excusas por parte de los usuarios (estudiantes,
+      docentes, empleados o ciudadanos, según el contexto).`,
+    version: '1.0.1',
+    author: 'JRdevsoft',
+    website: 'https://jrdevsoft.dev',   // opcional
+    email: 'jr.devsoft@gamil.com',    // opcional
+    logoUrl: 'assets/logo.png'         // pon tu logo aquí
+  },
   adminPhone: '18099028301'
 };
 

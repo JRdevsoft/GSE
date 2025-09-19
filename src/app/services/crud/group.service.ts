@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { concatMap, from, map, mapTo, mergeMap, Observable, tap } from 'rxjs';
+import { concatMap, defer, from, map, mapTo, mergeMap, Observable, tap } from 'rxjs';
 import { supabase } from 'src/app/core/supabase.client';
-import { GroupsI } from 'src/app/models/groups.models';
+import { GroupsI, GroupWithParentName } from 'src/app/models/groups.models';
 // import { addDoc, collection, deleteDoc, doc, Firestore, getDocs, updateDoc } from '@angular/fire/firestore';
 // import { from, Observable } from 'rxjs';
 // import { GroupsI } from 'src/app/models/groups.models';
@@ -11,7 +11,26 @@ import { GroupsI } from 'src/app/models/groups.models';
 })
 export class GroupService {
 
+
+getGroupsReq(): Observable<GroupsI[]> {
+   return defer(() =>
+    supabase
+      .from('groups')
+      .select(`
+        id,
+        name
+      `)
+      .order('name', { ascending: true })
+  ).pipe(
+    map(({ data, error }) => {
+      if (error) throw error;
+      // data puede ser null si la tabla está vacía
+      return (data ?? []) as GroupsI[];
+    })
+  );
+}
   // Obtener todos los grupos
+
   getGroups(): Observable<(GroupsI & { parentId?: string })[]> {
     return from(
       supabase
@@ -29,6 +48,10 @@ export class GroupService {
       })))
     );;
   }
+
+  getGroupsSolict(): Observable<GroupsI[]> {
+      return from(supabase.from('groups').select('*').then(({ data }) => data as GroupsI[]));
+    }
 
   // Agregar grupo
   addGroup(group: GroupsI): Observable<any> {

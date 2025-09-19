@@ -14,7 +14,7 @@ import { SupabaseService } from 'src/app/services/supabase/supabase.service';
 import { delay, filter, retry, take, tap } from 'rxjs';
 import { InteractionService } from 'src/app/services/interaction.service';
 import { StatesService } from 'src/app/services/crud/states.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PopoverController } from '@ionic/angular/standalone';
 import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.component';
 import { StateI } from 'src/app/models/state.models';
@@ -26,7 +26,8 @@ import { StateI } from 'src/app/models/state.models';
   standalone: true,
   imports: [IonGrid, IonCol, IonRow, IonText, IonPopover, IonAvatar, IonCheckbox, IonButton, IonIcon, IonRadio, IonRadioGroup, IonInput, IonList, IonLabel, IonItem,
     IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonContent, IonButtons, IonTitle, IonHeader,
-    IonToolbar, IonMenuButton, IonSelect, IonSelectOption, ReactiveFormsModule, FormsModule, CommonModule ]
+    IonToolbar, IonMenuButton, IonSelect, IonSelectOption, ReactiveFormsModule, FormsModule, CommonModule,
+    RouterLink ]
 })
 export class RequestsComponent  implements OnInit {
 

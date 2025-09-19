@@ -8,7 +8,8 @@ export namespace ModelsUsers {
     email: string,
     phone?: string,
     password?: string,
-    group_id: GroupsI,
+    status?: boolean,
+    group_id: GroupsI | null,
     photo?: string,
   }
 }

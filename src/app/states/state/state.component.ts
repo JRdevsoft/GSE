@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonButtons, IonContent, IonLabel, IonModal, IonButton, IonItem,
   IonInput, IonSearchbar, IonList, IonIcon, IonFab, IonFabButton, IonMenuButton, IonPopover, IonAvatar } from "@ionic/angular/standalone";
 import { addIcons } from 'ionicons';
-import { add, create, trash, ellipseOutline, logOutOutline, keyOutline } from 'ionicons/icons';
+import { add, create, trash, ellipseOutline, logOutOutline, keyOutline, informationCircleOutline } from 'ionicons/icons';
 import { StateI } from 'src/app/models/state.models';
 import { StatesService } from 'src/app/services/crud/states.service';
 import { InteractionService } from 'src/app/services/interaction.service';
@@ -20,7 +20,7 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
   standalone: true,
   imports: [ IonAvatar, IonPopover, IonFabButton, IonFab, IonIcon, IonList, IonSearchbar, IonInput, IonItem, IonButton, IonModal,
     IonLabel, IonContent, IonButtons, IonTitle, IonToolbar, IonHeader, IonMenuButton, FormsModule, CommonModule,
-  ReactiveFormsModule ]
+  ReactiveFormsModule, RouterLink ]
 })
 export class StateComponent  implements OnInit {
 
@@ -42,7 +42,7 @@ export class StateComponent  implements OnInit {
                 private popoverCtrl: PopoverController,
                 private supabaseService: SupabaseService,
                 ) {
-      addIcons({logOutOutline,keyOutline,trash,create,add,ellipseOutline});
+      addIcons({informationCircleOutline,keyOutline,logOutOutline,trash,create,add,ellipseOutline});
     }
     async ngOnInit() {
       this.searchForm = new FormGroup({

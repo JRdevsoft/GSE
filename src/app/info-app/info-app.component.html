@@ -1,0 +1,83 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Information Application</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="infoapp">
+  <div class="container">
+
+    <div class="logo-container">
+      <img class="logo" [src]="info.logoUrl" [alt]="info.name" />
+    </div>
+    <div class="hero">
+      <h1 class="title">
+        {{ info.name }}
+        <ion-badge color="primary" class="version">v{{ info.version }}</ion-badge>
+      </h1>
+      <p class="subtitle">{{ info.description }}</p>
+    </div>
+
+    <ion-card class="card glass">
+      <ion-card-header>
+        <ion-card-title>Acerca de</ion-card-title>
+        <ion-card-subtitle>Información de la aplicación</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="grid">
+          <div class="item">
+            <ion-icon name="apps-outline"></ion-icon>
+            <div>
+              <div class="label">Aplicación</div>
+              <div class="value">{{ info.name }}</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <ion-icon name="code-slash-outline"></ion-icon>
+            <div>
+              <div class="label">Versión</div>
+              <div class="value">{{ info.version }}</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <ion-icon name="person-circle-outline"></ion-icon>
+            <div>
+              <div class="label">Autor</div>
+              <div class="value">{{ info.author }}</div>
+            </div>
+          </div>
+
+          <div class="item" *ngIf="info.website">
+            <ion-icon name="globe-outline"></ion-icon>
+            <div>
+              <div class="label">Sitio web</div>
+              <div class="value link" (click)="openLink(info.website)">
+                {{ info.website }}
+              </div>
+            </div>
+          </div>
+
+          <div class="item" *ngIf="info.email">
+            <ion-icon name="mail-outline"></ion-icon>
+            <div>
+              <div class="label">Contacto</div>
+              <div class="value link" (click)="mailTo(info.email)">
+                {{ info.email }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="footer">
+      <ion-note>© {{ currentDate }} {{ info.author }}. Todos los derechos reservados.</ion-note>
+    </div>
+
+  </div>
+</ion-content>

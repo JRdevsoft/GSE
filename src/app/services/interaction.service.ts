@@ -68,7 +68,14 @@ export class InteractionService {
     });
   }
 
-
+  async showExistsAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header,
+      message,
+      buttons: ['OK'],
+    });
+    await alert.present();
+  }
 
 
 

@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { RequestsI } from 'src/app/models/requests.models';
 import { IonHeader, IonToolbar, IonButtons, IonCard, IonCardHeader, IonCardTitle,
   IonCardContent, IonContent, IonTitle, IonCardSubtitle, IonMenuButton, IonItem,
-  IonList, IonPopover, IonAvatar, IonIcon, IonText } from "@ionic/angular/standalone";
+  IonList, IonPopover, IonAvatar, IonIcon, IonText, IonLabel } from "@ionic/angular/standalone";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import {  GroupsI } from 'src/app/models/groups.models';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Models } from 'src/app/models/models';
 import { GroupService } from 'src/app/services/crud/group.service';
 import { InteractionService } from 'src/app/services/interaction.service';
@@ -21,8 +21,8 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
   templateUrl: './viewreceived.component.html',
   styleUrls: ['./viewreceived.component.scss'],
   standalone: true,
-  imports: [ IonIcon, IonAvatar, IonPopover, IonList, IonItem,  IonCardSubtitle,  IonTitle, IonContent, IonCardContent, IonCardTitle, IonCardHeader, IonCard,
-    IonButtons, IonToolbar, IonHeader, FormsModule, CommonModule, IonMenuButton]
+  imports: [IonLabel,  IonIcon, IonAvatar, IonPopover, IonList, IonItem,  IonCardSubtitle,  IonTitle, IonContent, IonCardContent, IonCardTitle, IonCardHeader, IonCard,
+    IonButtons, IonToolbar, IonHeader, FormsModule, CommonModule, IonMenuButton, RouterLink ]
 })
 export class ViewreceivedComponent  implements OnInit {
 

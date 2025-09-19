@@ -93,3 +93,34 @@ ion-fab-button {
 .scroll-content-padding {
   padding-bottom: 120px !important; // espacio para que el FAB no tape el contenido
 }
+// .pw-rules {
+//   ion-label.ok { color: var(--ion-color-success); font-weight: 600; font-size: 14px; }
+//   ion-label.bad { color: var(--ion-color-danger);  font-size: 10px; }
+// }
+
+.pw-rules {
+  ion-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    --min-height: 5px; // más compacto
+    --inner-padding-top: 0;
+    --inner-padding-bottom: 0;
+    margin: 0;
+    width: 30em;       // elimina espacios extra
+    border: transparent;
+  }
+
+  ion-icon {
+    font-size: 16px; // tamaño pequeño
+  }
+
+  ion-label.ok {
+    color: var(--ion-color-success);
+    font-size: 12px;
+  }
+
+  ion-label.bad {
+    color: var(--ion-color-danger);
+    font-size: 12px;
+  }
+}

@@ -50,8 +50,9 @@ export class AccessReqtComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadGroups();
+    console.log(this.loadGroups());
 
+    this.loadGroups();
     // Escucho cambios en el selector de grupo
     this.accessForm.get('group')!.valueChanges.subscribe(g => {
       // Primero, limpio validadores de TODOS los campos extra
@@ -65,6 +66,8 @@ export class AccessReqtComponent implements OnInit {
         c.reset('');
       });
 
+      // this.loadGroups();
+      // console.log(this.loadGroups());
       // Luego, según el grupo, activo los controles necesarios
       if (g === 'Docente') {
         ['subjectSchool','courseTeacher','sectionTeacher','modalidad']
@@ -109,9 +112,15 @@ export class AccessReqtComponent implements OnInit {
   }
 }
 
-  loadGroups(){
-    this.groupService.getGroups().subscribe(group => {
-      this.groups = group;
+   loadGroups() {
+    this.groupService.getGroups().subscribe({
+      next: (group) => {
+        this.groups = group;
+      },
+      error: (err) => {
+        console.error('Error al cargar grupos:', err);
+        this.interactionService.showToast('Error al cargar grupos');
+      },
     });
   }
   goLogin(){

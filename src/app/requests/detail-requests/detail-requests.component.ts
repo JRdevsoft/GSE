@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { RequestsI } from 'src/app/models/requests.models';
 import { StateI } from 'src/app/models/state.models';
 import { StatesService } from 'src/app/services/crud/states.service';
@@ -58,7 +58,8 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
     IonSelectOption,
     FormsModule,
     CommonModule,
-    IonToggle
+    IonToggle,
+    RouterLink
   ],
 })
 export class DetailRequestsComponent implements OnInit {

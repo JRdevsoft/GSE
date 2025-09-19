@@ -7,7 +7,7 @@ import {
   NgForm,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -29,7 +29,7 @@ import {
   IonSelect,
   IonCheckbox, IonPopover, IonAvatar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { add, create, trash, logOutOutline, keyOutline } from 'ionicons/icons';
+import { add, create, trash, logOutOutline, keyOutline, informationCircleOutline } from 'ionicons/icons';
 import { GroupsI } from 'src/app/models/groups.models';
 import { GroupService } from 'src/app/services/crud/group.service';
 import { InteractionService } from 'src/app/services/interaction.service';
@@ -64,6 +64,7 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
     CommonModule,
     IonSelect,
     IonCheckbox,
+    RouterLink
   ],
 })
 export class GroupsComponent implements OnInit {
@@ -100,7 +101,7 @@ export class GroupsComponent implements OnInit {
     private router: Router,
     private popoverCtrl: PopoverController
   ) {
-    addIcons({logOutOutline,keyOutline,trash,create,add});
+    addIcons({informationCircleOutline,keyOutline,logOutOutline,trash,create,add});
   }
 
   async ngOnInit() {

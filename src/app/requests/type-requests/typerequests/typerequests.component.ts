@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
   IonHeader,
   IonToolbar,
@@ -56,6 +56,7 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
         IonSelectOption,
         IonMenuButton,
         CommonModule,
+        RouterLink
 
   ]
 })

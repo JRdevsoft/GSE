@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonHeader, IonInput, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonButton,
-  IonToggle, IonIcon, IonImg, IonGrid, IonRow, IonCol } from "@ionic/angular/standalone";
+  IonToggle, IonIcon, IonImg, IonGrid, IonRow, IonCol, IonText } from "@ionic/angular/standalone";
 import { InteractionService } from 'src/app/services/interaction.service';
 import { ConfigLogoService } from 'src/app/services/supabase/config/config-logo.service';
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
@@ -13,7 +13,7 @@ import { SupabaseService } from 'src/app/services/supabase/supabase.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   standalone: true,
-  imports: [IonCol, IonRow, IonGrid, IonImg, IonIcon, IonButton, IonLabel, IonItem, IonContent, IonTitle, IonToolbar, IonInput, IonHeader, FormsModule,
+  imports: [IonText, IonCol, IonRow, IonGrid, IonImg, IonIcon, IonButton, IonLabel, IonItem, IonContent, IonTitle, IonToolbar, IonInput, IonHeader, FormsModule,
     IonToggle, FormsModule, ReactiveFormsModule, CommonModule
   ]
 })
@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit {
   error: string | null = null;
   logo: string = 'assets/icon/favicon.png'
   title: string = '';
+  emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/;
 
   constructor(private supabaseService: SupabaseService,
               private router: Router,
@@ -29,7 +30,7 @@ export class LoginComponent implements OnInit {
               private imageLogoService: ConfigLogoService,
               private fb: FormBuilder) {
                 this.loginForm = this.fb.group({
-                  email: ['', [Validators.required, Validators.email]],
+                  email: ['', [Validators.required, Validators.pattern(this.emailPattern)]],
                   password: ['', Validators.required],
                   rememberMe: [false, Validators.required]
                 });
@@ -41,6 +42,18 @@ export class LoginComponent implements OnInit {
     });
     this.imageLogoService.title$.subscribe(title => this.title = title);
   }
+  // helper para el template
+get emailCtrl(): AbstractControl {
+  return this.loginForm.get('email')!;
+}
+
+// opcional: limpia espacios y pone en minúsculas al salir del campo
+normalizeEmail() {
+  const v = (this.emailCtrl.value || '').toString().trim().toLowerCase();
+  if (v !== this.emailCtrl.value) {
+    this.emailCtrl.setValue(v);
+  }
+}
 
   ionViewWillEnter() {
     // Guardamos antes del reset

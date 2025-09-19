@@ -13,13 +13,17 @@
     <ion-popover trigger="use-avatar" dismiss-on-select="true">
     <ng-template>
       <ion-list>
-        <ion-item button (click)="logout()">
-          <ion-icon name="log-out-outline" slot="start"></ion-icon>
-          Cerrar sesión
-        </ion-item>
+      <ion-item routerLink="/info">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        <ion-label>Info app</ion-label>
+      </ion-item>
         <ion-item button (click)="changePassword()">
           <ion-icon name="key-outline" slot="start"></ion-icon>
           Cambiar contraseña
+        </ion-item>
+      <ion-item button (click)="logout()">
+          <ion-icon name="log-out-outline" slot="start"></ion-icon>
+          Cerrar sesión
         </ion-item>
       </ion-list>
     </ng-template>
@@ -56,8 +60,6 @@
     </ion-text>
   </ng-template>
 
-
-
   <!-- 🧾 Modal Crear Usuario -->
   <ion-modal #modalCreate>
     <ng-template>
@@ -77,8 +79,13 @@
               type="text"
               name="name"
               required
+              #nameCtrl="ngModel"
               [(ngModel)]="newUser.name"
+              (keypress)="allowOnlyLetters($event)"
             ></ion-input>
+            <ion-text color="danger" *ngIf="nameCtrl.invalid && (nameCtrl.dirty || nameCtrl.touched)">
+            El nombre debe ser obligatorio.
+          </ion-text>
           </ion-item>
 
           <ion-item>
@@ -88,18 +95,33 @@
               name="email"
               required
               [(ngModel)]="newUser.email"
+              #emailCtrl="ngModel"
+              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
             ></ion-input>
+            <ion-text color="danger" *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)">
+            Ingrese un correo válido (ej: usuario&#64;dominio.com).
+          </ion-text>
           </ion-item>
 
           <ion-item>
-            <ion-label position="floating">Telefono</ion-label>
+            <ion-label position="floating">Teléfono</ion-label>
             <ion-input
-              type="phone"
+              type="tel"
               name="phone"
               required
+              maxlength="12"
+              inputmode="numeric"
               [(ngModel)]="newUser.phone"
+              #phoneCtrl="ngModel"
+              (ionInput)="formatPhone($event)"
+              (keypress)="allowOnlyNumbers($event)"
+              pattern="\d{3}-\d{3}-\d{4}"
             ></ion-input>
           </ion-item>
+          <!-- mensaje de error opcional -->
+          <ion-text color="danger" *ngIf="phoneCtrl.invalid && (phoneCtrl.dirty || phoneCtrl.touched)">
+            El teléfono debe tener 10 dígitos (ej: 809-555-1234).
+          </ion-text>
 
           <ion-item>
             <ion-label>Grupos</ion-label>
@@ -112,7 +134,63 @@
 
           <ion-item>
             <ion-label position="floating">Password</ion-label>
-            <ion-input type="password" [(ngModel)]="newUser.password" name="password" required></ion-input>
+            <ion-input
+            type="password"
+            [(ngModel)]="newUser.password"
+            name="password"
+            required
+            #passwordCtrl="ngModel"
+            (ionInput)="onPasswordInput($event)"
+            [pattern]="passwordPattern"
+            >
+            </ion-input>
+            <!-- Checklist visual -->
+           <ion-list class="pw-rules" lines="none" aria-live="polite">
+              <ion-item>
+                <ion-icon slot="start"
+                          [name]="listValidate.hasMin ? 'checkmark-circle' : 'close-circle'"
+                          [color]="listValidate.hasMin ? 'success' : 'danger'"
+                          size="small"></ion-icon>
+                <ion-label [class.ok]="listValidate.hasMin" [class.bad]="!listValidate.hasMin">
+                  Mínimo 8 caracteres.
+                </ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-icon slot="start"
+                          [name]="listValidate.hasUpper ? 'checkmark-circle' : 'close-circle'"
+                          [color]="listValidate.hasUpper ? 'success' : 'danger'"
+                          size="small"></ion-icon>
+                <ion-label [class.ok]="listValidate.hasUpper" [class.bad]="!listValidate.hasUpper">
+                  Al menos una mayúscula.
+                </ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-icon slot="start"
+                          [name]="listValidate.hasNumber ? 'checkmark-circle' : 'close-circle'"
+                          [color]="listValidate.hasNumber ? 'success' : 'danger'"
+                          size="small"></ion-icon>
+                <ion-label [class.ok]="listValidate.hasNumber" [class.bad]="!listValidate.hasNumber">
+                  Al menos un número.
+                </ion-label>
+              </ion-item>
+
+              <ion-item>
+                <ion-icon slot="start"
+                          [name]="listValidate.hasSpecial ? 'checkmark-circle' : 'close-circle'"
+                          [color]="listValidate.hasSpecial ? 'success' : 'danger'"
+                          size="small"></ion-icon>
+                <ion-label [class.ok]="listValidate.hasSpecial" [class.bad]="!listValidate.hasSpecial">
+                  Al menos un carácter especial.
+                </ion-label>
+              </ion-item>
+            </ion-list>
+
+            <ion-text color="danger"
+              *ngIf="passwordCtrl.invalid && (passwordCtrl.dirty || passwordCtrl.touched)">
+            La contraseña debe cumplir todos los requisitos.
+          </ion-text>
           </ion-item>
 
           <ion-item>
@@ -177,11 +255,20 @@
 
           <ion-item>
             <ion-label>Grupo</ion-label>
-            <ion-select name="editGroupId" [(ngModel)]="selectedGroupId" interface="popover" [compareWith]="compareGroups">
+            <ion-select name="editGroupId" [(ngModel)]="selectedGroupId" interface="popover">
               <ion-select-option *ngFor="let group of groups" [value]="group.id">
                 {{ group.name }}
               </ion-select-option>
             </ion-select>
+          </ion-item>
+
+           <ion-item>
+            <ion-label>Foto</ion-label>
+            <input
+              type="file"
+              (change)="uploadPhoto($event)"
+              accept="image/*"
+            />
           </ion-item>
 
           <ion-button expand="full" type="submit" [disabled]="!formEdit.form.valid">

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { InteractionService } from 'src/app/services/interaction.service';
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
 import {  IonHeader, IonToolbar, IonTitle, IonButtons, IonAvatar, IonPopover, IonList,
@@ -15,7 +15,7 @@ import { PasswordConfirmComponent } from './password-confirm/password-confirm.co
   styleUrls: ['./show-access-requests.component.scss'],
   standalone: true,
   imports: [ IonIcon, IonLabel, IonContent, IonItem, IonList, IonPopover, IonAvatar, IonButtons, IonTitle, IonToolbar,
-    IonHeader, IonMenuButton, CommonModule ]
+    IonHeader, IonMenuButton, CommonModule, RouterLink ]
 })
 export class ShowAccessRequestsComponent  implements OnInit {
 

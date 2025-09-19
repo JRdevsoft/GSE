@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Models } from 'src/app/models/models';
 import { InteractionService } from 'src/app/services/interaction.service';
 import { AccessReqtService } from 'src/app/services/supabase/access-requests/access-reqt.service';
@@ -17,7 +17,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [IonButton, IonLabel, IonCardContent, IonCardTitle, IonCardHeader, IonCard,
     IonContent, IonItem, IonList, IonPopover, IonAvatar, IonTitle, IonBackButton, IonButtons,
-    IonToolbar, IonHeader, CommonModule, IonIcon ]
+    IonToolbar, IonHeader, CommonModule, IonIcon, RouterLink ]
 })
 export class DetailsAccessComponent  implements OnInit {
 
