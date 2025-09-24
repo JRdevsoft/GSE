@@ -197,14 +197,6 @@
     </ng-template>
   </ion-modal>
 
-  <!-- 🔎 Búsqueda -->
-  <form [formGroup]="searchForm">
-    <ion-searchbar
-      formControlName="search"
-      placeholder="Buscar grupo"
-    ></ion-searchbar>
-  </form>
-
   <!-- 📃 Lista de Grupos -->
   <ion-list>
     <ion-item *ngFor="let group of groups">

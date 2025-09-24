@@ -17,7 +17,7 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
     selector: 'app-state',
     templateUrl: './state.component.html',
     styleUrls: ['./state.component.scss'],
-    imports: [IonAvatar, IonPopover, IonFabButton, IonFab, IonIcon, IonList, IonSearchbar, IonInput, IonItem, IonButton, IonModal,
+    imports: [IonAvatar, IonPopover, IonFabButton, IonFab, IonIcon, IonList, IonInput, IonItem, IonButton, IonModal,
         IonLabel, IonContent, IonButtons, IonTitle, IonToolbar, IonHeader, IonMenuButton, FormsModule, CommonModule,
         ReactiveFormsModule, RouterLink]
 })

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InteractionService } from 'src/app/services/interaction.service';
 import { AccessReqtService } from 'src/app/services/supabase/access-requests/access-reqt.service';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonItem, IonInput, IonButton, IonButtons,
@@ -13,6 +13,7 @@ import { GroupService } from 'src/app/services/crud/group.service';
     selector: 'app-access-reqt',
     templateUrl: './access-reqt.component.html',
     styleUrls: ['./access-reqt.component.scss'],
+    standalone: true,
     imports: [IonTextarea, IonBackButton, IonButtons, IonButton, IonInput, IonItem, IonLabel, IonContent, IonTitle, IonToolbar, IonHeader,
         ReactiveFormsModule, CommonModule, IonSelect, IonSelectOption, FormsModule]
 })
@@ -65,8 +66,6 @@ export class AccessReqtComponent implements OnInit {
         c.reset('');
       });
 
-      // this.loadGroups();
-      // console.log(this.loadGroups());
       // Luego, según el grupo, activo los controles necesarios
       if (g === 'Docente') {
         ['subjectSchool','courseTeacher','sectionTeacher','modalidad']
@@ -84,6 +83,34 @@ export class AccessReqtComponent implements OnInit {
       this.accessForm.updateValueAndValidity();
     });
   }
+
+  // ---------- Teléfono ----------
+  private digitsOnly(s: string): string {
+    return (s ?? '').replace(/\D+/g, '');
+  }
+  private formatPhone(value: string): string {
+    const d = this.digitsOnly(value).slice(0, 10);
+    if (d.length <= 3) return d;
+    if (d.length <= 6) return `${d.slice(0,3)}-${d.slice(3)}`;
+    return `${d.slice(0,3)}-${d.slice(3,6)}-${d.slice(6)}`;
+  }
+  onPhoneInput(ev: any) {
+    const raw: string = ev?.detail?.value ?? ev?.target?.value ?? '';
+    const formatted = this.formatPhone(raw);
+    this.accessForm.patchValue({ phone: formatted }, { emitEvent: false });
+    this.ctrl('phone')!.updateValueAndValidity({ onlySelf: true });
+  }
+  onPhoneKeyDown(ev: KeyboardEvent) {
+    const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab'];
+    if (allowed.includes(ev.key)) return;
+    if (!/^\d$/.test(ev.key)) ev.preventDefault();
+  }
+  private phoneValidator = (c: AbstractControl) => {
+    const len = this.digitsOnly(String(c.value ?? '')).length;
+    return len === 10 ? null : { phone: true };
+  };
+
+   ctrl(n: string) { return this.accessForm.get(n)!; }
   async submitRequest() {
     if (this.accessForm.invalid) return;
 

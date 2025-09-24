@@ -82,9 +82,6 @@
       </ng-template>
     </ion-modal>
 
-  <form [formGroup]="searchForm">
-      <ion-searchbar formControlName="search" placeholder="Buscar Estado" ></ion-searchbar>
-  </form>
    <ion-list>
         @for (stat of state; track $index) {
           <ion-item class="list-item">

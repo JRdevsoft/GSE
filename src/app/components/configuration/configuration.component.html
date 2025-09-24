@@ -70,7 +70,6 @@
         <!-- Seleccionar Imagen -->
         <ion-button
           expand="block"
-          color="tertiary"
           class="ion-margin-top"
           (click)="selectSolicitImage()">
           Seleccionar Imagen Central
@@ -86,11 +85,13 @@
         <!-- Subir Imagen -->
         <ion-button
           expand="block"
-          color="tertiary"
+          class="btnUp"
           [disabled]="!canUploadSolicitImage"
           (click)="uploadSolicitImage()">
           Subir Imagen Central
         </ion-button>
+        <ion-progress-bar *ngIf="upload.solicit > 0" [value]="upload.solicit" color="success"></ion-progress-bar>
+
       </div>
     </ion-card-content>
 
@@ -127,7 +128,6 @@
         <!-- Seleccionar Imagen -->
         <ion-button
           expand="block"
-          color="tertiary"
           class="ion-margin-top"
           (click)="selectExcuseImage()">
           Seleccionar Imagen Central
@@ -143,11 +143,12 @@
         <!-- Subir Imagen -->
         <ion-button
           expand="block"
-          color="tertiary"
+          class="btnUp"
           [disabled]="!canUploadExcuseImage"
           (click)="uploadExcuseImage()">
           Subir Imagen Central
         </ion-button>
+        <ion-progress-bar *ngIf="upload.excuse > 0" [value]="upload.excuse" color="success"></ion-progress-bar>
       </div>
     </ion-card-content>
 
@@ -177,7 +178,6 @@
         <!-- Seleccionar Logo -->
         <ion-button
           expand="block"
-          color="primary"
           (click)="selectLogoImage()">
           Seleccionar Imagen Logo
         </ion-button>
@@ -192,21 +192,13 @@
         <!-- Subir Logo -->
         <ion-button
           expand="block"
-          color="primary"
+          class="btnUp"
           [disabled]="!canUploadLogoImage"
           (click)="uploadLogoImage()">
           Subir Imagen Logo
         </ion-button>
+        <ion-progress-bar *ngIf="upload.logo > 0" [value]="upload.logo" color="success"></ion-progress-bar>
       </div>
     </ion-card-content>
-
-    <!-- Modo Oscuro -->
-    <ion-item>
-      <ion-label>Modo Oscuro</ion-label>
-      <ion-toggle
-        [checked]="showForm.isDarkMode"
-        (ionChange)="toggleDarkMode($event)">
-      </ion-toggle>
-    </ion-item>
   </ion-card>
 </ion-content>
