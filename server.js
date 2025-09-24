@@ -23,7 +23,7 @@ const PORT = parseInt(process.env.PORT, 10) || 4200;
 const server = http.createServer((req, res) => {
   // Sirve la carpeta 'www' y redirige TODO a index.html (SPA)
   return handler(req, res, {
-    public: 'www',
+    public: 'www/browser',
     rewrites: [
       { source: '**', destination: '/index.html' }
     ]
