@@ -77,3 +77,15 @@
   text-align: center;
   font-weight: 700;
 }
+
+.field-item {
+  --padding-start: 12px;
+  --inner-padding-end: 12px;
+  border-radius: 12px;
+  transition: box-shadow .15s ease;
+}
+.field-item.invalid { box-shadow: 0 0 0 2px rgba(239,68,68,.45) inset; }  /* rojo */
+.field-item.valid   { box-shadow: 0 0 0 2px rgba(34,197,94,.45) inset; }  /* verde */
+.error-text { color: var(--ion-color-danger); font-size: 12px; margin: 6px 6px 0; }
+
+

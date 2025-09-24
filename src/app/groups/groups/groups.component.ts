@@ -45,7 +45,6 @@ import { UserMenuComponent } from 'src/app/components/user-menu/user-menu.compon
         IonFab,
         IonIcon,
         IonList,
-        IonSearchbar,
         IonInput,
         IonItem,
         IonButton,
@@ -117,6 +116,7 @@ export class GroupsComponent implements OnInit {
 
     this.userPhoto =  await this.supabaseService.loadPhoto();
   }
+
   async openUserMenu(ev: Event) {
     const popover = await this.popoverCtrl.create({
       component: UserMenuComponent,

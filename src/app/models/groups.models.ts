@@ -25,3 +25,10 @@ export interface GroupI{
 export interface GroupWithParentName extends GroupsI {
   parentName?: string | null;
 }
+
+export interface GroupsFilters {
+  mode: 'all' | 'name' | 'phone' | 'date';
+  search?: string;            // name or phone, según mode
+  dateFrom?: string | null;   // ISO yyyy-mm-dd
+  dateTo?: string | null;     // ISO yyyy-mm-dd
+}

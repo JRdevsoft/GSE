@@ -3,14 +3,14 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { supabase } from 'src/app/core/supabase.client';
 import { IonHeader, IonInput, IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonButton,
-  IonText, MenuController } from "@ionic/angular/standalone";
+  IonText, MenuController, IonIcon, IonNote, IonList } from "@ionic/angular/standalone";
 import { CommonModule } from '@angular/common';
-
+import { passwordComplexity, PasswordPolicy, sameAs } from 'src/app/helper/password-validation';
 @Component({
     selector: 'app-reset-password',
     templateUrl: './reset-password.component.html',
     styleUrls: ['./reset-password.component.scss'],
-    imports: [IonText, IonButton, IonLabel, IonItem, IonContent, IonTitle, IonToolbar, IonInput, IonHeader,
+    imports: [IonList, IonNote, IonIcon, IonText, IonButton, IonLabel, IonItem, IonContent, IonTitle, IonToolbar, IonInput, IonHeader,
         ReactiveFormsModule, CommonModule
     ]
 })
@@ -20,12 +20,14 @@ export class ResetPasswordComponent implements OnInit {
   message: string = '';
   error: string = '';
   accessToken: string | null = null;
-
+  policy: PasswordPolicy = { min: 8, upper: 1, digits: 1, special: 1 };
+  showPwd = false;
+  showConfirm = false;
   constructor(private fb: FormBuilder, private router: Router, private menuCtrl: MenuController) {
     this.form = this.fb.group({
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, passwordComplexity(this.policy)]],
       confirm: ['', [Validators.required]],
-    });
+    },  { validators: sameAs('password', 'confirm') });
   }
 
   // Se llama justo antes de que Ionic muestre esta página
@@ -86,4 +88,19 @@ export class ResetPasswordComponent implements OnInit {
     this.error = '⚠️ Algo salió mal. Intenta nuevamente.';
   }
   }
+
+///get pw() { return String(this.form.get('password')?.value ?? ''); }
+get mismatch() { return this.form.hasError('passwordsMismatch'); }
+
+  // Contadores basados en el valor actual
+get pw(): string { return String(this.form.get('password')?.value ?? ''); }
+get upperCount(): number { return (this.pw.match(/[A-Z]/g) ?? []).length; }
+get digitCount(): number { return (this.pw.match(/\d/g) ?? []).length; }
+get specialCount(): number { return (this.pw.match(/[^A-Za-z0-9]/g) ?? []).length; }
+
+// Cumplimientos (booleans para el template)
+get okMin(): boolean { return this.pw.length >= (this.policy.min ?? 8); }
+get okUpper(): boolean { return this.upperCount >= (this.policy.upper ?? 0); }
+get okDigits(): boolean { return this.digitCount >= (this.policy.digits ?? 0); }
+get okSpecial(): boolean { return this.specialCount >= (this.policy.special ?? 0); }
 }

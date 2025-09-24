@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonButtons, IonContent, IonButton, IonMenuButton, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonInput, IonToggle, PopoverController, IonAvatar, IonPopover, IonList, IonIcon } from '@ionic/angular/standalone';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { IonHeader, IonToolbar, IonTitle, IonButtons, IonContent, IonButton, IonMenuButton,
+  IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonItem, IonLabel, IonInput,
+  IonToggle, IonAvatar, IonPopover, IonList, IonIcon, ToastController, LoadingController, IonProgressBar } from '@ionic/angular/standalone';
 import { Camera, CameraResultType, CameraSource  } from '@capacitor/camera';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -13,7 +15,7 @@ import { ConfigLogoService } from 'src/app/services/supabase/config/config-logo.
     selector: 'app-configuration',
     templateUrl: './configuration.component.html',
     styleUrls: ['./configuration.component.scss'],
-    imports: [IonIcon, IonList, IonPopover, IonAvatar, IonToggle, IonInput, IonLabel, IonItem, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonButton,
+    imports: [IonProgressBar, IonIcon, IonList, IonPopover, IonAvatar, IonToggle, IonInput, IonLabel, IonItem, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonButton,
         IonContent, IonButtons, IonTitle, IonToolbar, IonHeader, IonMenuButton, FormsModule, CommonModule,
         RouterLink]
 })
@@ -26,6 +28,12 @@ export class ConfigurationComponent  implements OnInit {
     formLogo: false,
     isDarkMode: false
   };
+  upload = {
+    solicit: 0,
+    excuse: 0,
+    logo:   0
+  };
+  private progressTimers: Record<'solicit'|'excuse'|'logo', any> = { solicit: null, excuse: null, logo: null };
 
   userPhoto = '';
 
@@ -53,19 +61,18 @@ export class ConfigurationComponent  implements OnInit {
   selectedLogoImgFormat: string|null = null;
   selectedLogoImgName:   string|null = null;
 
+  cacheKey = Date.now();//romper cache de imágenes
   constructor(
     private reqCfg: ConfigScreenRequestsService,
     private excCfg: ConfigScreenExcuseService,
     private logoService: ConfigLogoService,
     private supabaseService: SupabaseService,
-    private router: Router
+    private router: Router,
+    private toastCtrl: ToastController,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
-    // Tema
-    const storedTheme = localStorage.getItem('theme');
-    this.showForm.isDarkMode = storedTheme === 'dark';
-    this.applyTheme();
 
     // Avatar
     this.userPhoto = await this.supabaseService.loadPhoto();
@@ -80,9 +87,56 @@ export class ConfigurationComponent  implements OnInit {
     this.excCfg.text$.subscribe(txt=> this.currentExcuse.text  = txt);
 
     this.logoService.image$.subscribe(img => this.currentLogo.image = img);
-    this.logoService.title$.subscribe(t  => this.currentExcuse.title = t);
+    this.logoService.title$.subscribe(t  => this.currentLogo.title = t);
   }
 
+  private async toast(message: string, color: 'success'|'warning'|'danger' = 'success') {
+    const t = await this.toastCtrl.create({ message, duration: 2000, color, position: 'bottom', icon: 'checkmark-circle' });
+    t.present();
+  }
+
+  private startProgress(which: 'solicit'|'excuse'|'logo') {
+    this.upload[which] = 0.05;
+    clearInterval(this.progressTimers[which]);
+    this.progressTimers[which] = setInterval(() => {
+      // sube poco a poco hasta 0.9 mientras sube en backend
+      if (this.upload[which] < 0.9) this.upload[which] = Math.min(0.9, this.upload[which] + Math.random() * 0.08);
+    }, 180);
+  }
+
+  private async finishProgress(which: 'solicit'|'excuse'|'logo') {
+    clearInterval(this.progressTimers[which]);
+    this.upload[which] = 1;
+    await new Promise(r => setTimeout(r, 400));
+    this.upload[which] = 0; // ocultar barra
+  }
+
+  private resetSectionUI(section: 'formSolict'|'formExcuse'|'formLogo') {
+    // Cierra todos los toggles
+    this.showForm.formSolict = false;
+    this.showForm.formExcuse = false;
+    this.showForm.formLogo   = false;
+
+    // Limpia campos temporales del section
+    if (section === 'formSolict') {
+      this.selectedSolicitImgBase64 = null;
+      this.selectedSolicitImgFormat = null;
+      this.selectedSolicitImgName   = null;
+    }
+    if (section === 'formExcuse') {
+      this.selectedExcuseImgBase64 = null;
+      this.selectedExcuseImgFormat = null;
+      this.selectedExcuseImgName   = null;
+    }
+    if (section === 'formLogo') {
+      this.selectedLogoImgBase64 = null;
+      this.selectedLogoImgFormat = null;
+      this.selectedLogoImgName   = null;
+    }
+    // Limpia inputs comunes
+    this.newTitle = '';
+    this.newText  = '';
+  }
   logout() {
     this.supabaseService.signOut();
     this.router.navigate(['/auth']);
@@ -92,14 +146,16 @@ export class ConfigurationComponent  implements OnInit {
     this.router.navigate(['/changed-pass']);
   }
 
-  // Tema
-  toggleDarkMode(event: any) {
-    this.showForm.isDarkMode = event.detail.checked;
-    localStorage.setItem('theme', this.showForm.isDarkMode ? 'dark' : 'light');
-    this.applyTheme();
+  /** Adjunta ?v=cacheKey para forzar recarga */
+  cacheBust(url?: string): string {
+    if (!url) return '';
+    const sep = url.includes('?') ? '&' : '?';
+    return `${url}${sep}v=${this.cacheKey}`;
   }
-  applyTheme() {
-    document.body.classList.toggle('dark', this.showForm.isDarkMode);
+  /** Cuando cambie una imagen, renueva cacheKey y refresca UI */
+  private bumpCache() {
+    this.cacheKey = Date.now();
+    this.cdr.markForCheck(); // por si usas OnPush
   }
 
   // ——— Solicitudes ———
@@ -112,8 +168,8 @@ export class ConfigurationComponent  implements OnInit {
     if (!this.canUpdateSolicit) return;
     this.reqCfg.changeTitle(this.newTitle);
     this.reqCfg.changeText(this.newText);
-    this.newTitle = '';
-    this.newText  = '';
+    this.toast('Texto de Solicitud actualizado', 'success');
+    this.resetSectionUI('formSolict');
   }
 
   async selectSolicitImage() {
@@ -136,15 +192,19 @@ export class ConfigurationComponent  implements OnInit {
   }
 
   async uploadSolicitImage() {
-    if (!this.selectedSolicitImgBase64) return;
-    await this.reqCfg.changeImageBase64(
-      this.selectedSolicitImgBase64,
-      this.selectedSolicitImgFormat!
-    );
-    // limpiamos estado
-    this.selectedSolicitImgBase64 = null;
-    this.selectedSolicitImgFormat = null;
-    this.selectedSolicitImgName   = null;
+      if (!this.selectedSolicitImgBase64) return;
+      this.startProgress('solicit');
+      try {
+      await this.reqCfg.changeImageBase64(this.selectedSolicitImgBase64, this.selectedSolicitImgFormat!);
+      await this.finishProgress('solicit');
+      this.bumpCache();
+      await this.toast('Imagen de Solicitud cambiada', 'success');
+      this.resetSectionUI('formSolict');
+    } catch (e) {
+      await this.finishProgress('solicit');
+      console.error(e);
+      await this.toast('Error al subir imagen de Solicitud', 'danger');
+    }
   }
 
   get canUploadSolicitImage(): boolean {
@@ -161,8 +221,8 @@ export class ConfigurationComponent  implements OnInit {
     if (!this.canUpdateExcuse) return;
     this.excCfg.changeTitle(this.newTitle);
     this.excCfg.changeText(this.newText);
-    this.newTitle = '';
-    this.newText  = '';
+    this.toast('Texto de Excusa actualizado', 'success');
+    this.resetSectionUI('formExcuse');
   }
 
   async selectExcuseImage() {
@@ -184,14 +244,19 @@ export class ConfigurationComponent  implements OnInit {
   }
 
   async uploadExcuseImage() {
-    if (!this.selectedExcuseImgBase64) return;
-    await this.excCfg.changeImageBase64(
-      this.selectedExcuseImgBase64,
-      this.selectedExcuseImgFormat!
-    );
-    this.selectedExcuseImgBase64 = null;
-    this.selectedExcuseImgFormat = null;
-    this.selectedExcuseImgName   = null;
+      if (!this.selectedExcuseImgBase64) return;
+      this.startProgress('excuse');
+      try {
+      await this.excCfg.changeImageBase64(this.selectedExcuseImgBase64, this.selectedExcuseImgFormat!);
+      await this.finishProgress('excuse');
+      this.bumpCache();
+      await this.toast('Imagen de Excusa cambiada', 'success');
+      this.resetSectionUI('formExcuse');
+    } catch (e) {
+      await this.finishProgress('excuse');
+      console.error(e);
+      await this.toast('Error al subir imagen de Excusa', 'danger');
+    }
   }
 
   get canUploadExcuseImage(): boolean {
@@ -206,7 +271,9 @@ export class ConfigurationComponent  implements OnInit {
   updateLogoTitleText() {
     if (!this.canUpdateTitleLogo) return;
     this.logoService.changeTitle(this.newTitle);
-    this.newTitle = '';
+    this.toast('Título de logo actualizado', 'success');
+    this.resetSectionUI('formLogo');
+    // this.newTitle = '';
   }
   async selectLogoImage() {
     try {
@@ -227,14 +294,19 @@ export class ConfigurationComponent  implements OnInit {
   }
 
   async uploadLogoImage() {
-    if (!this.selectedLogoImgBase64) return;
-    await this.logoService.changeImageBase64(
-      this.selectedLogoImgBase64,
-      this.selectedLogoImgFormat!
-    );
-    this.selectedLogoImgBase64 = null;
-    this.selectedLogoImgFormat = null;
-    this.selectedLogoImgName   = null;
+      if (!this.selectedLogoImgBase64) return;
+      this.startProgress('logo');
+      try {
+      await this.logoService.changeImageBase64(this.selectedLogoImgBase64, this.selectedLogoImgFormat!);
+      await this.finishProgress('logo');
+      this.bumpCache();
+      await this.toast('Logo cambiado', 'success');
+      this.resetSectionUI('formLogo');
+    } catch (e) {
+      await this.finishProgress('logo');
+      console.error(e);
+      await this.toast('Error al subir logo', 'danger');
+    }
   }
 
   get canUploadLogoImage(): boolean {
@@ -257,147 +329,4 @@ export class ConfigurationComponent  implements OnInit {
       this.showForm[section]    = !this.showForm[section];
     }
   }
-  // showForm = {
-  //   formSolict: false,
-  //   formExcuse: false,
-  //   isDarkMode: false,
-  //   formLogo: false
-  // };
-
-  // userPhoto = '';
-  // showUserMenu = false;
-
-  // // Campos ligados a los formularios
-  // newTitle = '';
-  // newText  = '';
-  // newImageFile: File | null = null;
-
-  // // Valores corrientes de cada pantalla
-  // currentSolict = { image: '', title: '', text: '' };
-  // currentExcuse = { image: '', title: '', text: '' };
-  // currentLogo = { image: '' };
-
-  // constructor(
-  //   private reqCfg: ConfigScreenRequestsService,
-  //   private excCfg: ConfigScreenExcuseService,
-  //   private logoService: ConfigLogoService,
-  //   private supabaseService: SupabaseService,
-  //   private router: Router
-  // ) {}
-
-  // async ngOnInit() {
-  //   // Tema
-  //   const storedTheme = localStorage.getItem('theme');
-  //   this.showForm.isDarkMode = storedTheme === 'dark';
-  //   this.applyTheme();
-
-  //   // Avatar
-  //   this.userPhoto = await this.supabaseService.loadPhoto();
-
-  //   // Suscripciones a valores actuales
-  //   this.reqCfg.image$.subscribe(img => this.currentSolict.image = img);
-  //   this.reqCfg.title$.subscribe(t  => this.currentSolict.title = t);
-  //   this.reqCfg.text$.subscribe(txt=> this.currentSolict.text  = txt);
-
-  //   this.excCfg.image$.subscribe(img => this.currentExcuse.image = img);
-  //   this.excCfg.title$.subscribe(t  => this.currentExcuse.title = t);
-  //   this.excCfg.text$.subscribe(txt=> this.currentExcuse.text  = txt);
-
-  //   //LOGO
-  //   this.logoService.image$.subscribe(img => this.currentLogo.image = img);
-  // }
-  // logout() {
-  //   this.supabaseService.signOut();
-  //   this.router.navigate(['/auth']);
-  // }
-
-  // changePassword(){
-  //   this.router.navigate(['/changed-pass']);
-  // }
-  // // Tema
-  // toggleDarkMode(event: any) {
-  //   this.showForm.isDarkMode = event.detail.checked;
-  //   localStorage.setItem('theme', this.showForm.isDarkMode ? 'dark' : 'light');
-  //   this.applyTheme();
-  // }
-  // applyTheme() {
-  //   document.body.classList.toggle('dark', this.showForm.isDarkMode);
-  // }
-
-  // // ——— Solicitudes ———
-
-  // updateDataTitleText() {
-  //   if (this.newTitle.trim()) {
-  //     this.reqCfg.changeTitle(this.newTitle);
-  //     this.newTitle = '';
-  //   }
-  //   if (this.newText.trim()) {
-  //     this.reqCfg.changeText(this.newText);
-  //     this.newText = '';
-  //   }
-  // }
-
-  // async selectImageFromGallery() {
-  //   try {
-  //     const photo = await Camera.getPhoto({
-  //       quality: 80,
-  //       allowEditing: false,
-  //       resultType: CameraResultType.Base64,
-  //       source: CameraSource.Photos
-  //     });
-
-  //     if (photo && photo.base64String) {
-  //       await this.reqCfg.changeImageBase64(photo.base64String, photo.format);
-  //     }
-  //   } catch (e) {
-  //     console.error('Error al seleccionar imagen:', e);
-  //   }
-  // }
-
-  // // ——— Excusas ———
-
-  // updateDataTitleTextExcuse() {
-  //   if (this.newTitle.trim()) {
-  //     this.excCfg.changeTitle(this.newTitle);
-  //     this.newTitle = '';
-  //   }
-  //   if (this.newText.trim()) {
-  //     this.excCfg.changeText(this.newText);
-  //     this.newText = '';
-  //   }
-  // }
-  // async selectImageFromGalleryExcuse() {
-  //   try {
-  //         const photo = await Camera.getPhoto({
-  //           quality: 80,
-  //           allowEditing: false,
-  //           resultType: CameraResultType.Base64,
-  //           source: CameraSource.Photos
-  //         });
-
-  //         if (photo && photo.base64String) {
-  //           await this.excCfg.changeImageBase64(photo.base64String, photo.format);
-  //         }
-  //       } catch (e) {
-  //         console.error('Error al seleccionar imagen:', e);
-  //       }
-  // }
-
-  // ///Cambiar imagen de Logo
-  // async selectImageLogo() {
-  //   try {
-  //     const photo = await Camera.getPhoto({
-  //       quality: 80,
-  //       allowEditing: false,
-  //       resultType: CameraResultType.Base64,
-  //       source: CameraSource.Photos
-  //     });
-
-  //     if (photo && photo.base64String) {
-  //       await this.logoService.changeImageBase64(photo.base64String, photo.format);
-  //     }
-  //   } catch (e) {
-  //     console.error('Error al seleccionar imagen:', e);
-  //   }
-  // }
 }

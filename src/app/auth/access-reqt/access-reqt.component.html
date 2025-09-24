@@ -36,7 +36,13 @@
     <div class="field-group">
       <ion-item class="field-item">
         <ion-label position="floating">Teléfono</ion-label>
-        <ion-input type="tel" formControlName="phone"></ion-input>
+        <ion-input
+        type="tel"
+        inputmode="numeric"
+        maxlength="12"
+        formControlName="phone"
+        (ionInput)="onPhoneInput($event)"
+        (keydown)="onPhoneKeyDown($event)"></ion-input>
       </ion-item>
       <div *ngIf="accessForm.get('phone').touched && accessForm.get('phone').invalid"
            class="error-text">
@@ -64,7 +70,7 @@
       <ion-item class="field-item">
         <ion-label>Grupo al que Perteneces</ion-label>
         <ion-select formControlName="group">
-          <ion-select-option *ngFor="let g of groups" [value]="g.id">
+          <ion-select-option *ngFor="let g of groups" [value]="g.name">
             {{ g.name }}
           </ion-select-option>
         </ion-select>

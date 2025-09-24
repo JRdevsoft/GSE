@@ -1,0 +1,55 @@
+/* Transiciones suaves */
+:root, :root.dark {
+  transition: background-color .18s ease, color .18s ease;
+}
+
+/* Tema claro por defecto (ejemplos) */
+:root {
+  --ion-background-color: #f7f8fb;
+  --ion-text-color: #111827;
+  --ion-card-background: #ffffff;
+  --ion-toolbar-background: #ffffff;
+  --ion-item-background: #ffffff;
+  --ion-border-color: #e5e7eb;
+
+  /* Colores principales (verde legible) */
+  --ion-color-primary: #16a34a;
+  --ion-color-primary-contrast: #ffffff;
+}
+
+/* Tema oscuro con contraste alto y no “negro puro” */
+:root.dark {
+  --ion-background-color: #0f1420;               /* fondo */
+  --ion-background-color-rgb: 15,20,32;
+  --ion-text-color: #e8edf7;                     /* texto */
+  --ion-card-background: #141b2b;                /* cards */
+  --ion-toolbar-background: #0f1625;             /* toolbar */
+  --ion-item-background: #141b2b;                /* items */
+  --ion-border-color: #273048;                   /* líneas */
+
+  /* Color primario más vivo para contraste en dark */
+  --ion-color-primary: #22c55e;
+  --ion-color-primary-contrast: #0a0f1a;
+
+  /* Steps (mejoran listas/ion-item) */
+  --ion-color-step-50:  #0f1420;
+  --ion-color-step-100: #121828;
+  --ion-color-step-150: #151d2f;
+  --ion-color-step-200: #182135;
+  --ion-color-step-250: #1b263c;
+  --ion-color-step-300: #1e2b43;
+  --ion-color-step-350: #223149;
+  --ion-color-step-400: #253650;
+}
+
+/* Asegura que ion-content herede bien el fondo */
+ion-content, .ion-page {
+  background: var(--ion-background-color) !important;
+}
+
+.btnUp {
+  --background: #fff700;  /* verde oscuro */
+  --color:      #000000;
+  font-weight: 600;
+  box-shadow:   0 2px 8px rgba(0,0,0,0.1);
+}

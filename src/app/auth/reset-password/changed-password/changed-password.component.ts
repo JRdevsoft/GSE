@@ -3,16 +3,17 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router } from '@angular/router';
 import { supabase } from 'src/app/core/supabase.client';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonInput, IonButton, IonItem, IonText,
-  IonButtons, IonBackButton, IonAvatar, IonPopover, IonList, IonIcon } from "@ionic/angular/standalone";
+  IonButtons, IonBackButton, IonAvatar, IonPopover, IonList, IonIcon, IonNote } from "@ionic/angular/standalone";
 import { CommonModule } from '@angular/common';
 import { SupabaseService } from 'src/app/services/supabase/supabase.service';
+import { passwordComplexity, PasswordPolicy, sameAs } from 'src/app/helper/password-validation';
 
 @Component({
     selector: 'app-changed-password',
     templateUrl: './changed-password.component.html',
     styleUrls: ['./changed-password.component.scss'],
-    imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonInput, IonButton, IonItem, IonText,
-        FormsModule, ReactiveFormsModule, IonButtons, IonBackButton, CommonModule,
+    imports: [IonNote, IonHeader, IonToolbar, IonTitle, IonContent, IonLabel, IonInput, IonButton, IonItem, IonText,
+        FormsModule, ReactiveFormsModule, IonButtons, IonBackButton, CommonModule, IonList, IonIcon,
     ]
 })
 export class ChangedPasswordComponent  implements OnInit {
@@ -22,14 +23,20 @@ export class ChangedPasswordComponent  implements OnInit {
     error: string = '';
     accessToken: string | null = null;
     userPhoto: string = '';
+    policy: PasswordPolicy = { min: 8, upper: 1, digits: 1, special: 1 };
+    showPwd = false;
+    showConfirm = false;
 
     constructor(private fb: FormBuilder, private router: Router,
       private supabaseService: SupabaseService
     ) {
       this.form = this.fb.group({
-        password: ['', [Validators.required, Validators.minLength(6)]],
+        password: ['', [Validators.required, passwordComplexity(this.policy)]],
         confirm: ['', [Validators.required]],
-      }, { validators: this.passwordsMatch });
+      },
+        // validators: this.passwordsMatch
+      { validators: sameAs('password', 'confirm')}
+    );
     }
 
     async ngOnInit(){
@@ -71,4 +78,19 @@ export class ChangedPasswordComponent  implements OnInit {
         this.error = '⚠️ Algo salió mal. Intenta nuevamente.';
       }
     }
+
+    ///get pw() { return String(this.form.get('password')?.value ?? ''); }
+get mismatch() { return this.form.hasError('passwordsMismatch'); }
+
+  // Contadores basados en el valor actual
+get pw(): string { return String(this.form.get('password')?.value ?? ''); }
+get upperCount(): number { return (this.pw.match(/[A-Z]/g) ?? []).length; }
+get digitCount(): number { return (this.pw.match(/\d/g) ?? []).length; }
+get specialCount(): number { return (this.pw.match(/[^A-Za-z0-9]/g) ?? []).length; }
+
+// Cumplimientos (booleans para el template)
+get okMin(): boolean { return this.pw.length >= (this.policy.min ?? 8); }
+get okUpper(): boolean { return this.upperCount >= (this.policy.upper ?? 0); }
+get okDigits(): boolean { return this.digitCount >= (this.policy.digits ?? 0); }
+get okSpecial(): boolean { return this.specialCount >= (this.policy.special ?? 0); }
 }

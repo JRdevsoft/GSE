@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { concatMap, defer, from, map, mapTo, mergeMap, Observable, tap } from 'rxjs';
 import { supabase } from 'src/app/core/supabase.client';
-import { GroupsI, GroupWithParentName } from 'src/app/models/groups.models';
+import { GroupI, GroupsFilters, GroupsI, GroupWithParentName } from 'src/app/models/groups.models';
 // import { addDoc, collection, deleteDoc, doc, Firestore, getDocs, updateDoc } from '@angular/fire/firestore';
 // import { from, Observable } from 'rxjs';
 // import { GroupsI } from 'src/app/models/groups.models';
@@ -49,6 +49,24 @@ getGroupsReq(): Observable<GroupsI[]> {
     );;
   }
 
+
+    async getGroupSearch(filters: GroupsFilters): Promise<GroupI[]> {
+      let query = supabase
+        .from('groups')
+        .select('*'
+        )
+        .order('created_at', { ascending: false });
+
+      // Filtro por nombre
+      if (filters.mode === 'name' && filters.search && filters.search.trim() !== '') {
+        query = query.ilike('groups.name', `%${filters.search.trim()}%`);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return (data ?? []) as unknown as GroupI[];
+    }
+
   getGroupsSolict(): Observable<GroupsI[]> {
       return from(supabase.from('groups').select('*').then(({ data }) => data as GroupsI[]));
     }
@@ -76,14 +94,6 @@ getGroupsReq(): Observable<GroupsI[]> {
         return data;
       })
   );
-    // return from(
-    //   supabase
-    //     .from('groups')
-    //     .insert([group])
-    //     .then(({ error }) => {
-    //       if (error) throw error;
-    //     })
-    // );
   }
 
   // Actualizar grupo
