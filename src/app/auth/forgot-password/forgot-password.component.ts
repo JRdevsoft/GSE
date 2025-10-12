@@ -42,7 +42,7 @@ export class ForgotPasswordComponent {
     const { email } = this.form.value;
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'http://requestgse-production.up.railway.app/reset-password'
+      redirectTo: 'https://requestsgse.up.railway.app/reset-password'
     });
 
     if (error) {
