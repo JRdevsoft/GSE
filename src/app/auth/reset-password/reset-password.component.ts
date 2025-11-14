@@ -53,7 +53,6 @@ export class ResetPasswordComponent implements OnInit {
     }
 
   }
-
   async updatePassword() {
     if (!this.accessToken) return;
 
@@ -99,7 +98,7 @@ get digitCount(): number { return (this.pw.match(/\d/g) ?? []).length; }
 get specialCount(): number { return (this.pw.match(/[^A-Za-z0-9]/g) ?? []).length; }
 
 // Cumplimientos (booleans para el template)
-get okMin(): boolean { return this.pw.length >= (this.policy.min ?? 8); }
+get okMin(): boolean { return this.pw.length >= (this.policy.min ?? 6); }
 get okUpper(): boolean { return this.upperCount >= (this.policy.upper ?? 0); }
 get okDigits(): boolean { return this.digitCount >= (this.policy.digits ?? 0); }
 get okSpecial(): boolean { return this.specialCount >= (this.policy.special ?? 0); }
