@@ -123,7 +123,7 @@ async loadUserAppData(): Promise<void> {
         try { await supabase.auth.admin.deleteUser(data.user?.id as string); } catch {}
         throw dbError;
       }
-      
+
       return data;
     } catch (error) {
       console.error("Error en registro:", error);
@@ -161,6 +161,19 @@ async loadUserAppData(): Promise<void> {
       console.error("Error en inicio de sesión:", error);
       throw error;
     }
+  }
+
+    async sendResetPasswordEmail(email: string) {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://requestsgse.up.railway.app/auth/reset-password' // MISMA que pusiste en Supabase
+    });
+
+    if (error) {
+      console.error('Error al enviar correo de reset:', error);
+      throw error;
+    }
+
+    return data;
   }
 
   async loadPhoto(){
